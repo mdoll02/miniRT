@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 20:37:04 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 22:44:53 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/02 23:40:59 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,23 @@
 #include "rendering.h"
 #include "mlx/mlx.h"
 #include "vec_math.h"
+
+
+static unsigned int	color_to_int(t_color color)
+{
+	return (((int)color.r & 0xff) << 16
+		| ((int)color.g & 0xff) << 8
+		| ((int)color.b & 0xff));
+}
+
+static void	mrt_pixel_put(t_mlx_image* img, int x, int y, t_color color)
+{
+	char	*dst;
+
+	dst = img->addr + (y * img->line_length + x
+			* (img->bbp / 8));
+	*(unsigned int *)dst = color_to_int(color);
+}
 
 void	render_scene(t_minirt *minirt)
 {
@@ -82,12 +99,11 @@ void	render_scene(t_minirt *minirt)
 				pixel_color = closest_obj->f_sample_color(closest_obj, hit_pos);
 
 			// Draw the pixel with the sampled color
-			mlx_pixel_put(minirt->ctx, minirt->win, x, y,
-				((int)pixel_color.r << 16) | ((int)pixel_color.g << 8)
-				| (int)pixel_color.b);
+			mrt_pixel_put(&minirt->img, x, y, pixel_color);
 			x++;
 		}
 		y++;
 	}
+	mlx_put_image_to_window(minirt->ctx, minirt->win, minirt->img.img, 0, 0);
 	mlx_string_put(minirt->ctx, minirt->win, 10, 20, 0xFFFFFF, "Rendering Done!");
 }

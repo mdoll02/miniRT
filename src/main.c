@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 09:50:18 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 13:52:40 by mdoll            ###   ########.fr       */
+/*   Updated: 2023/05/02 23:41:22 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@ int	main(int argc, char **argv)
 		error_and_exit("Failed to parse file\n");
 	minirt.ctx = mlx_init();
 	minirt.win = mlx_new_window(minirt.ctx, WIDTH, HEIGHT, "Pain");
+	minirt.img.img = mlx_new_image(minirt.ctx, WIDTH, HEIGHT);
+	minirt.img.addr = mlx_get_data_addr(minirt.img.img, &minirt.img.bbp,
+			&minirt.img.line_length, &minirt.img.endian);
 	render_scene(&minirt);
 	register_hooks(&minirt);
 	mlx_loop(minirt.ctx);

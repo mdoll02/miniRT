@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 09:59:30 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 22:27:59 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/02 23:39:45 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,16 @@
 
 typedef void*		t_mlx_context;
 typedef void*		t_mlx_window;
+typedef void*		t_mlx_image_ptr;
+
+typedef struct s_mlx_image
+{
+	t_mlx_image_ptr	img;
+	char			*addr;
+	int				bbp;
+	int				line_length;
+	int				endian;
+}	t_mlx_image;
 
 typedef struct s_vec3
 {
@@ -116,6 +126,7 @@ typedef struct s_minirt
 	t_mlx_context	ctx;
 	t_mlx_window	win;
 	t_world			world;
+	t_mlx_image		img;
 }	t_minirt;
 
 typedef struct s_lexed_line
