@@ -37,6 +37,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 clean:
 	@rm -rf $(OBJ_DIR)
+	@make -C $(MLX_DIR)/mlx clean
 
 fclean: clean
 	@rm -f $(NAME)
