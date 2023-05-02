@@ -10,6 +10,12 @@ SRC := main.c \
 		hooks/close.c \
 		hooks/keys.c \
 		parsing/rt_parser.c \
+		rendering/render.c \
+		math/vector.c \
+		math/vector_2.c \
+		math/sphere_intersect.c \
+		math/plane_intersect.c \
+		math/cylinder_intersect.c \
 
 SRC_DIR := src
 OBJ_DIR := obj
@@ -34,6 +40,8 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
 	@mkdir -p $(OBJ_DIR)/hooks
 	@mkdir -p $(OBJ_DIR)/parsing
+	@mkdir -p $(OBJ_DIR)/rendering
+	@mkdir -p $(OBJ_DIR)/math
 	@$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
 	@echo "Compiling $<"
 

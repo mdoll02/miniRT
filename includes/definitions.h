@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 09:59:30 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 18:11:14 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/02 22:27:59 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,17 @@ typedef struct s_vec3
 
 typedef struct s_color
 {
-	int	r;
-	int	g;
-	int	b;
+	float	r;
+	float	g;
+	float	b;
 }	t_color;
 
 struct				s_object;
 
-typedef t_color(	*t_f_check_intersect)(struct s_object obj,
-										t_vec3 pos1,
-										t_vec3 pos2);
-typedef t_vec3(		*t_f_sample_color)(struct s_object obj, t_vec3 pos);
+typedef t_vec3(		*t_f_check_intersect)(struct s_object* obj,
+										t_vec3 pos,
+										t_vec3 dir);
+typedef t_color(	*t_f_sample_color)(struct s_object* obj, t_vec3 pos);
 
 typedef struct s_object
 {
@@ -86,13 +86,13 @@ typedef union s_any_object {
 typedef struct s_ambient
 {
 	float	brightness;
-	t_vec3	pos;
+	t_color	color;
 }	t_ambient;
 
 typedef struct s_camera
 {
 	t_vec3	pos;
-	t_vec3	normal;
+	t_vec3	dir;
 	float	fov;
 }	t_camera;
 

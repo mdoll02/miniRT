@@ -16,6 +16,7 @@
 #include "hooks.h"
 #include "parsing.h"
 #include "libft.h"
+#include "rendering.h"
 
 static void	error_and_exit(const char *msg)
 {
@@ -34,6 +35,7 @@ int	main(int argc, char **argv)
 		error_and_exit("Failed to parse file\n");
 	minirt.ctx = mlx_init();
 	minirt.win = mlx_new_window(minirt.ctx, WIDTH, HEIGHT, "Pain");
+	render_scene(&minirt);
 	register_hooks(&minirt);
 	mlx_loop(minirt.ctx);
 }

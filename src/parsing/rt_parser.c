@@ -6,7 +6,7 @@
 /*   By: mdoll <mdoll@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 13:47:04 by mdoll             #+#    #+#             */
-/*   Updated: 2023/05/02 18:30:13 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/02 23:07:33 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,27 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "libft.h"
+#include "rendering.h"
+
+static const struct {
+	char				*name;
+	t_f_check_intersect	func;
+} s_intersect_funcs[] = {
+	{"sp", (t_f_check_intersect) & sphere_intersect},
+	{"pl", (t_f_check_intersect) & plane_intersect},
+	{"cy", (t_f_check_intersect) & cylinder_intersect},
+	{0, 0}
+};
+
+static const struct {
+	char				*name;
+	t_f_sample_color	func;
+} s_sample_funcs[] = {
+	{"sp", (t_f_sample_color) & sphere_sample_color},
+	{"pl", (t_f_sample_color) & plane_sample_color},
+	{"cy", (t_f_sample_color) & cylinder_sample_color},
+	{0, 0}
+};
 
 static char	*skip_spaces(char *line)
 {
@@ -142,6 +163,36 @@ static void	append_object(t_object **objects, t_object *new_obj)
 	while (cur->next)
 		cur = cur->next;
 	cur->next = new_obj;
+	new_obj->next = 0;
+}
+
+static void	set_support_functions(const char *type, t_object *obj)
+{
+	int		i;
+
+	i = 0;
+	while (s_intersect_funcs[i].name)
+	{
+		if (!ft_strcmp(s_intersect_funcs[i].name, type))
+		{
+			obj->f_intersect = s_intersect_funcs[i].func;
+			break ;
+		}
+		i++;
+	}
+	if (i == sizeof(s_intersect_funcs) / sizeof(s_intersect_funcs[0]))
+		obj->f_intersect = 0;
+	i = 0;
+	while (s_sample_funcs[i].name)
+	{
+		if (!ft_strcmp(s_sample_funcs[i].name, type))
+		{
+			obj->f_sample_color = s_sample_funcs[i].func;
+			return ;
+		}
+		i++;
+	}
+	obj->f_sample_color = 0;
 }
 
 static int	add_object(t_lexed_line *lex, t_object **objects)
@@ -160,9 +211,9 @@ static int	add_object(t_lexed_line *lex, t_object **objects)
 		free(obj);
 		return (1);
 	}
-	ft_memcpy(obj + sizeof(t_object), lex->values,
+	set_support_functions(lex->obj_name, (t_object *)obj);
+	ft_memcpy(((char *)obj) + sizeof(t_object), lex->values,
 		sizeof(float) * lex->nb_of_values);
-	// TODO: add f_intersect and f_sample_color
 	append_object(objects, (t_object *)obj);
 	return (0);
 }
