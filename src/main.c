@@ -6,17 +6,28 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 09:50:18 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 10:43:37 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/02 13:52:40 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mlx/mlx.h>
+#include <printf.h>
+#include <stdlib.h>
 #include "hooks.h"
+#include "parsing.h"
 
-int	main(void)
+static void	error_and_exit(const char *msg)
+{
+	printf("Error\n%s\n", msg);
+	exit(1);
+}
+
+int	main(int argc, char **argv)
 {
 	t_minirt	minirt;
 
+	if (argc != 2)
+		error_and_exit("Wrong number of arguments\n");
 	minirt.ctx = mlx_init();
 	minirt.win = mlx_new_window(minirt.ctx, 1280, 720, "Pain");
 	register_hooks(&minirt);
