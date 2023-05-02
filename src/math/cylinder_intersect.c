@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 23:06:28 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 23:20:22 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/02 23:28:33 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_vec3 cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 	float discriminant = b * b - 4 * a * c;
 
 	if (discriminant < 0)
-		return vec3_init(NAN, NAN, NAN);
+		return (vec3_init(NAN, NAN, NAN));
 
 	float t1 = (-b - sqrtf(discriminant)) / (2 * a);
 	float t2 = (-b + sqrtf(discriminant)) / (2 * a);
@@ -39,10 +39,10 @@ t_vec3 cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 		t2 = NAN;
 
 	if (isnan(t1) && isnan(t2))
-		return vec3_init(NAN, NAN, NAN);
+		return (vec3_init(NAN, NAN, NAN));
 
 	float t = isnan(t1) ? t2 : isnan(t2) ? t1 : fminf(t1, t2);
-	return vec3_add(pos, vec3_mul(dir, t));
+	return (vec3_add(pos, vec3_mul(dir, t)));
 }
 
 t_color	cylinder_sample_color(t_cylinder *cyl, t_vec3 pos)
