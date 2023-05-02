@@ -25,7 +25,6 @@ MLX := -L$(MLX_DIR)/mlx -lmlx
 OBJ := $(SRC:%.c=$(OBJ_DIR)/%.o)
 
 all: $(NAME)
-	#ln -sf miniRT minirt
 
 $(NAME): $(OBJ)
 	@make -C $(MLX_DIR)/mlx
