@@ -16,6 +16,7 @@ SRC := main.c \
 		math/sphere_intersect.c \
 		math/plane_intersect.c \
 		math/cylinder_intersect.c \
+		math/checkerboard_sample.c \
 
 SRC_DIR := src
 OBJ_DIR := obj
