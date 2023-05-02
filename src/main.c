@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdoll <mdoll@stduent.42wolfsburg.de>       +#+  +:+       +#+        */
+/*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/02 09:50:18 by mdoll             #+#    #+#             */
-/*   Updated: 2023/05/02 10:26:54 by mdoll            ###   ########.fr       */
+/*   Created: 2023/05/02 09:50:18 by kschmidt          #+#    #+#             */
+/*   Updated: 2023/05/02 10:43:37 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,12 @@
 
 int	main(void)
 {
-	t_mlx_context	ctx;
-	t_mlx_window	win;
+	t_minirt	minirt;
 
-	ctx = mlx_init();
-	win = mlx_new_window(ctx, 1280, 720, "Pain");
-	mlx_loop(ctx);
-	mlx_destroy_window(ctx, win);
-	free(ctx);
+	minirt.ctx = mlx_init();
+	minirt.win = mlx_new_window(minirt.ctx, 1280, 720, "Pain");
+	mlx_loop(minirt.ctx);
+	mlx_destroy_window(minirt.ctx, minirt.win);
+	free(minirt.ctx);
 	return (0);
 }
