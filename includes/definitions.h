@@ -40,12 +40,6 @@ typedef t_color(	*t_f_check_intersect)(struct s_object obj,
 										t_vec3 pos2);
 typedef t_vec3(		*t_f_sample_color)(struct s_object obj, t_vec3 pos);
 
-typedef struct s_minirt
-{
-	t_mlx_context	ctx;
-	t_mlx_window	win;
-}	t_minirt;
-
 typedef struct s_object
 {
 	struct s_object		*next;
@@ -99,5 +93,18 @@ typedef struct world
 	t_light		light;
 	t_object	*objects;
 }	t_world;
+
+typedef struct s_minirt
+{
+	t_mlx_context	ctx;
+	t_mlx_window	win;
+	t_world			world;
+}	t_minirt;
+
+typedef struct s_lexed_line
+{
+	char	*obj_name;
+	float	*values;
+}	t_lexed_line;
 
 #endif //DEFINITIONS_H
