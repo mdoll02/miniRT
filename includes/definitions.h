@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 09:59:30 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 13:44:11 by mdoll            ###   ########.fr       */
+/*   Updated: 2023/05/02 18:11:14 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,19 @@ typedef struct s_cylinder
 	t_color		color;
 }	t_cylinder;
 
+typedef union s_any_object {
+	t_object	obj;
+	t_plane		plane;
+	t_sphere	sphere;
+	t_cylinder	cylinder;
+}	t_any_object;
+
+typedef struct s_ambient
+{
+	float	brightness;
+	t_vec3	pos;
+}	t_ambient;
+
 typedef struct s_camera
 {
 	t_vec3	pos;
@@ -89,6 +102,7 @@ typedef struct s_light
 
 typedef struct world
 {
+	t_ambient	ambient;
 	t_camera	camera;
 	t_light		light;
 	t_object	*objects;
