@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 20:37:04 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 23:40:59 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/02 23:43:12 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,5 +105,5 @@ void	render_scene(t_minirt *minirt)
 		y++;
 	}
 	mlx_put_image_to_window(minirt->ctx, minirt->win, minirt->img.img, 0, 0);
-	mlx_string_put(minirt->ctx, minirt->win, 10, 20, 0xFFFFFF, "Rendering Done!");
+	mlx_string_put(minirt->ctx, minirt->win, 10, 20, 0xFFF, "Rendering Done!");
 }
