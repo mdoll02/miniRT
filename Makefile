@@ -16,7 +16,7 @@ OBJ_DIR := obj
 MLX_DIR := ext/minilibx-linux
 LIBS := -L/usr/X11/lib -lm -lX11 -lXext
 
-INCLUDES := -I includes -I $(MLX_DIR) -I /usr/X11/include
+INCLUDES := -I includes -I $(MLX_DIR) -I /usr/X11/include -I ext/libft/
 
 MLX := -L$(MLX_DIR)/mlx -lmlx
 
