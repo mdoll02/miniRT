@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 23:06:28 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 23:06:28 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/02 23:20:22 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,12 @@ t_vec3 cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 
 	float y1 = pos.y + t1 * dir.y;
 	float y2 = pos.y + t2 * dir.y;
+	float y = cylinder->pos.y - cylinder->height / 2;
 
-	if (y1 < cylinder->pos.y || y1 > cylinder->pos.y + cylinder->height)
+	if (y1 < y || y1 > y + cylinder->height)
 		t1 = NAN;
 
-	if (y2 < cylinder->pos.y || y2 > cylinder->pos.y + cylinder->height)
+	if (y2 < y || y2 > y + cylinder->height)
 		t2 = NAN;
 
 	if (isnan(t1) && isnan(t2))
