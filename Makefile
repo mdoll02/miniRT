@@ -9,6 +9,7 @@ SRC := main.c \
 		hooks/hooks.c \
 		hooks/close.c \
 		hooks/keys.c \
+		parsing/rt_parser.c \
 
 SRC_DIR := src
 OBJ_DIR := obj
@@ -32,6 +33,7 @@ $(NAME): $(OBJ)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
 	@mkdir -p $(OBJ_DIR)/hooks
+	@mkdir -p $(OBJ_DIR)/parsing
 	@$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
 	@echo "Compiling $<"
 
