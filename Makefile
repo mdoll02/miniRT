@@ -17,7 +17,7 @@ OBJ_DIR := obj
 MLX_DIR := ext/minilibx-linux
 LIBS := -L/usr/X11/lib -lm -lX11 -lXext
 
-INCLUDES := -I includes -I $(MLX_DIR) -I /usr/X11/include -I ext/libft/
+INCLUDES := -I includes -I $(MLX_DIR) -I /usr/X11/include -I ext/libft
 
 MLX := -L$(MLX_DIR)/mlx -lmlx
 
@@ -28,7 +28,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@make -C $(MLX_DIR)/mlx 2> /dev/null
 	@make -C ext/libft
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(MLX) $(LIBS)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(MLX) $(LIBS) ext/libft/libft.a
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
