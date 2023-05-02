@@ -16,6 +16,9 @@
 # include <X11/X.h>
 # include <X11/keysym.h>
 
+# define WIDTH 1280
+# define HEIGHT 720
+
 typedef void*		t_mlx_context;
 typedef void*		t_mlx_window;
 

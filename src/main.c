@@ -33,7 +33,7 @@ int	main(int argc, char **argv)
 	if (parse_rt_file(argv[1], &minirt.world))
 		error_and_exit("Failed to parse file\n");
 	minirt.ctx = mlx_init();
-	minirt.win = mlx_new_window(minirt.ctx, 1280, 720, "Pain");
+	minirt.win = mlx_new_window(minirt.ctx, WIDTH, HEIGHT, "Pain");
 	register_hooks(&minirt);
 	mlx_loop(minirt.ctx);
 }
