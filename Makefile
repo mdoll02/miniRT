@@ -25,7 +25,7 @@ OBJ := $(SRC:%.c=$(OBJ_DIR)/%.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@make -C $(MLX_DIR)/mlx
+	@make -C $(MLX_DIR)/mlx 2> /dev/null
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(MLX) $(LIBS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
