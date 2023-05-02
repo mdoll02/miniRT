@@ -11,10 +11,11 @@
 /* ************************************************************************** */
 
 #include <mlx/mlx.h>
-#include <printf.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "hooks.h"
 #include "parsing.h"
+#include "libft.h"
 
 static void	error_and_exit(const char *msg)
 {
@@ -28,6 +29,7 @@ int	main(int argc, char **argv)
 
 	if (argc != 2)
 		error_and_exit("Wrong number of arguments\n");
+	ft_bzero(&minirt, sizeof(t_minirt));
 	if (parse_rt_file(argv[1], &minirt.world))
 		error_and_exit("Failed to parse file\n");
 	minirt.ctx = mlx_init();
