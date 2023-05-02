@@ -119,6 +119,7 @@ typedef struct s_lexed_line
 {
 	char	*obj_name;
 	float	*values;
+	int		nb_of_values;
 }	t_lexed_line;
 
 #endif //DEFINITIONS_H
