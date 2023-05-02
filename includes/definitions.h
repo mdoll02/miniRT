@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 09:59:30 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 13:37:02 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/02 13:44:11 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ typedef struct s_color
 	int	g;
 	int	b;
 }	t_color;
+
+struct				s_object;
 
 typedef t_color(	*t_f_check_intersect)(struct s_object obj,
 										t_vec3 pos1,
