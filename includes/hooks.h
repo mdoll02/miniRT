@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   hooks.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/02 09:50:18 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 10:43:37 by kschmidt         ###   ########.fr       */
+/*   Created: 2023/05/02 10:46:59 by kschmidt          #+#    #+#             */
+/*   Updated: 2023/05/02 11:36:12 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <mlx/mlx.h>
-#include "hooks.h"
+#ifndef HOOKS_H
+# define HOOKS_H
 
-int	main(void)
-{
-	t_minirt	minirt;
+# include "definitions.h"
 
-	minirt.ctx = mlx_init();
-	minirt.win = mlx_new_window(minirt.ctx, 1280, 720, "Pain");
-	register_hooks(&minirt);
-	mlx_loop(minirt.ctx);
-}
+void	register_hooks(t_minirt *minirt);
+
+int		loop_hook(t_minirt *minirt);
+int		key_hook(int keycode, t_minirt *minirt);
+int		close_hook(t_minirt *minirt);
+
+#endif //HOOKS_H

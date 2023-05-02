@@ -1,24 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   hooks.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/02 09:50:18 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 10:43:37 by kschmidt         ###   ########.fr       */
+/*   Created: 2023/05/02 10:49:13 by kschmidt          #+#    #+#             */
+/*   Updated: 2023/05/02 11:36:18 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <mlx/mlx.h>
+#include "definitions.h"
 #include "hooks.h"
+#include "mlx/mlx.h"
 
-int	main(void)
+void	register_hooks(t_minirt *minirt)
 {
-	t_minirt	minirt;
-
-	minirt.ctx = mlx_init();
-	minirt.win = mlx_new_window(minirt.ctx, 1280, 720, "Pain");
-	register_hooks(&minirt);
-	mlx_loop(minirt.ctx);
+	mlx_hook(minirt->win, DestroyNotify, 0, close_hook, minirt);
+	mlx_key_hook(minirt->win, key_hook, minirt);
 }

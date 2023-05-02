@@ -6,12 +6,15 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 09:59:30 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 10:43:22 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/02 11:28:04 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DEFINITIONS_H
 # define DEFINITIONS_H
+
+# include <X11/X.h>
+# include <X11/keysym.h>
 
 typedef void*	t_mlx_context;
 typedef void*	t_mlx_window;

@@ -6,19 +6,17 @@ CFLAGS := -Wall -Wextra -Werror -g
 # CFLAGS := $(CFLAGS) -fsanitize=address
 
 SRC := main.c \
+		hooks/hooks.c \
+		hooks/close.c \
+		hooks/keys.c \
 
 SRC_DIR := src
 OBJ_DIR := obj
 
-ifeq ($(shell uname), Linux)
-	MLX_DIR := ext/minilibx-linux
-	LIBS := -lm -lX11 -lXext
-else
-	MLX_DIR := ext/minilibx-macos
-	LIBS := -lm -framework OpenGL -framework AppKit
-endif
+MLX_DIR := ext/minilibx-linux
+LIBS := -L/usr/X11/lib -lm -lX11 -lXext
 
-INCLUDES := -I includes -I $(MLX_DIR)
+INCLUDES := -I includes -I $(MLX_DIR) -I /usr/X11/include
 
 MLX := -L$(MLX_DIR)/mlx -lmlx
 
@@ -32,6 +30,7 @@ $(NAME): $(OBJ)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(OBJ_DIR)/hooks
 	@$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
 	@echo "Compiling $<"
 
