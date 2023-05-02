@@ -26,6 +26,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@make -C $(MLX_DIR)/mlx 2> /dev/null
+	@make -C ext/libft
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(MLX) $(LIBS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
@@ -38,9 +39,11 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 clean:
 	@rm -rf $(OBJ_DIR)
 	@make -C $(MLX_DIR)/mlx clean
+	@make -C ext/libft clean
 
 fclean: clean
 	@rm -f $(NAME)
+	@make -C ext/libft fclean
 
 re: fclean all
 
