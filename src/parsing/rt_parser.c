@@ -6,7 +6,7 @@
 /*   By: mdoll <mdoll@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 13:47:04 by mdoll             #+#    #+#             */
-/*   Updated: 2023/05/02 23:07:33 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/03 10:28:17 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,49 +14,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include "libft.h"
-#include "rendering.h"
-
-static const struct {
-	char				*name;
-	t_f_check_intersect	func;
-} s_intersect_funcs[] = {
-	{"sp", (t_f_check_intersect) & sphere_intersect},
-	{"pl", (t_f_check_intersect) & plane_intersect},
-	{"cy", (t_f_check_intersect) & cylinder_intersect},
-	{0, 0}
-};
-
-static const struct {
-	char				*name;
-	t_f_sample_color	func;
-} s_sample_funcs[] = {
-	{"sp", (t_f_sample_color) & sphere_sample_color},
-	{"pl", (t_f_sample_color) & plane_sample_color},
-	{"cy", (t_f_sample_color) & cylinder_sample_color},
-	{0, 0}
-};
-
-static char	*skip_spaces(char *line)
-{
-	char	*cur;
-
-	cur = line;
-	while ((*cur == ' ' || *cur == '\t') && *cur)
-		cur++;
-	return (cur);
-}
-
-static char	*get_word_end(char *line)
-{
-	char	*cur;
-
-	cur = line;
-	while (*cur != ' ' && *cur != '\t' && *cur != '\n' && *cur)
-		cur++;
-	return (cur);
-}
+#include "parsing.h"
 
 static char	*set_type(char	*line, t_lexed_line *lexed_line)
 {
@@ -73,35 +32,21 @@ static char	*set_type(char	*line, t_lexed_line *lexed_line)
 	return (cur);
 }
 
-static int	allocate_flt_array(float **num_arr, char *line)
+static int	set_value(char *line, t_lexed_line *lexed_line, int end, int i)
 {
-	int		nb_of_args;
+	char	*tmp;
 
-	nb_of_args = 0;
-	while (*line && *line != '\n')
-	{
-		line = skip_spaces(line);
-		while ((ft_isdigit(*line) || *line == '.' || *line == '-') && *line)
-			line++;
-		if (*line == '/')
-			break ;
-		if (*line != ',' && *line != '\n' && skip_spaces(line) == line && *line)
-			return (0);
-		nb_of_args++;
-		line++;
-	}
-	if (!nb_of_args)
-		return (0);
-	*num_arr = malloc(sizeof(float) * nb_of_args);
-	if (!*num_arr)
-		return (0);
-	return (nb_of_args);
+	tmp = ft_substr(line, 0, end);
+	if (!tmp)
+		return (1);
+	lexed_line->values[i] = atof(tmp);
+	free(tmp);
+	return (0);
 }
 
 static int	lex_line(char *line, t_lexed_line *lexed_line)
 {
 	char	*cur;
-	char	*tmp;
 	int		i;
 
 	line = set_type(line, lexed_line);
@@ -120,101 +65,11 @@ static int	lex_line(char *line, t_lexed_line *lexed_line)
 			break ;
 		while ((ft_isdigit(*cur) || *cur == '.' || *cur == '-') && *cur)
 			cur++;
-		tmp = ft_substr(line, 0, cur - line);
-		lexed_line->values[i] = atof(tmp);
+		if (set_value(line, lexed_line, (int)(cur - line), i))
+			return (3);
 		i++;
 		cur++;
 	}
-	return (0);
-}
-
-static ssize_t	get_file_size(char *file)
-{
-	int		fd;
-	ssize_t	total_size;
-	ssize_t	size;
-	char	text[100];
-
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		return (1);
-	total_size = 0;
-	while (1)
-	{
-		size = read(fd, &text, 100);
-		total_size += size;
-		if (size <= 0)
-			break ;
-	}
-	close(fd);
-	return (total_size);
-}
-
-static void	append_object(t_object **objects, t_object *new_obj)
-{
-	t_object	*cur;
-
-	if (!*objects)
-	{
-		*objects = new_obj;
-		return ;
-	}
-	cur = *objects;
-	while (cur->next)
-		cur = cur->next;
-	cur->next = new_obj;
-	new_obj->next = 0;
-}
-
-static void	set_support_functions(const char *type, t_object *obj)
-{
-	int		i;
-
-	i = 0;
-	while (s_intersect_funcs[i].name)
-	{
-		if (!ft_strcmp(s_intersect_funcs[i].name, type))
-		{
-			obj->f_intersect = s_intersect_funcs[i].func;
-			break ;
-		}
-		i++;
-	}
-	if (i == sizeof(s_intersect_funcs) / sizeof(s_intersect_funcs[0]))
-		obj->f_intersect = 0;
-	i = 0;
-	while (s_sample_funcs[i].name)
-	{
-		if (!ft_strcmp(s_sample_funcs[i].name, type))
-		{
-			obj->f_sample_color = s_sample_funcs[i].func;
-			return ;
-		}
-		i++;
-	}
-	obj->f_sample_color = 0;
-}
-
-static int	add_object(t_lexed_line *lex, t_object **objects)
-{
-	t_any_object	*obj;
-
-	obj = malloc(sizeof(t_any_object));
-	if (!obj)
-		return (1);
-	if ((!ft_strcmp(lex->obj_name, "sp") && lex->nb_of_values != 7)
-		|| (!ft_strcmp(lex->obj_name, "pl") && lex->nb_of_values != 9)
-		|| (!ft_strcmp(lex->obj_name, "cy") && lex->nb_of_values != 11))
-	{
-		printf("Error: Wrong number of arguments for object %s\n",
-			lex->obj_name);
-		free(obj);
-		return (1);
-	}
-	set_support_functions(lex->obj_name, (t_object *)obj);
-	ft_memcpy(((char *)obj) + sizeof(t_object), lex->values,
-		sizeof(float) * lex->nb_of_values);
-	append_object(objects, (t_object *)obj);
 	return (0);
 }
 
@@ -254,10 +109,7 @@ int	parse_rt_file(char	*file, t_world *world)
 	{
 		lex_line(file_content + i, &lexed_line);
 		put_lexed_line(&lexed_line, world);
-		if (lexed_line.obj_name)
-			free(lexed_line.obj_name);
-		if (lexed_line.values)
-			free(lexed_line.values);
+		free_lexed_line(&lexed_line);
 		while (file_content[i] != '\n' && file_content[i])
 			i++;
 		if (file_content[i])

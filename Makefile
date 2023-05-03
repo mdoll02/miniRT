@@ -10,6 +10,8 @@ SRC := main.c \
 		hooks/close.c \
 		hooks/keys.c \
 		parsing/rt_parser.c \
+		parsing/parsing_utils.c \
+		parsing/object_utils.c \
 		rendering/render.c \
 		math/vector.c \
 		math/vector_2.c \
