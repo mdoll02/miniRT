@@ -73,11 +73,6 @@ void	render_scene(t_minirt *minirt)
 			obj = minirt->world.objects;
 			while (obj)
 			{
-				if (!obj->f_intersect)
-				{
-					obj = obj->next;
-					continue ;
-				}
 				isect = obj->f_intersect(obj, ray_start, ray_dir);
 				if (!isnan(isect.x) && !isnan(isect.y) && !isnan(isect.z))
 				{
