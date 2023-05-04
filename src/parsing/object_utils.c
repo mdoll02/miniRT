@@ -6,7 +6,7 @@
 /*   By: mdoll <mdoll@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 09:57:28 by mdoll             #+#    #+#             */
-/*   Updated: 2023/05/03 09:57:34 by mdoll            ###   ########.fr       */
+/*   Updated: 2023/05/04 12:43:39 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,26 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-static const struct {
-	char				*name;
-	t_f_check_intersect	func;
-} s_intersect_funcs[] = {
+typedef const struct {
+	char	*name;
+	void	*func;
+}	t_func_pair;
+
+static t_func_pair s_intersect_funcs[] = {
 		{"sp", (t_f_check_intersect) & sphere_intersect},
 		{"pl", (t_f_check_intersect) & plane_intersect},
 		{"cy", (t_f_check_intersect) & cylinder_intersect},
 		{0, 0}
 };
 
-static const struct {
-	char				*name;
-	t_f_sample_color	func;
-} s_sample_funcs[] = {
+static t_func_pair s_normal_funcs[] = {
+		{"sp", (t_f_get_normal) & sphere_normal},
+		{"pl", (t_f_get_normal) & plane_normal},
+		{"cy", (t_f_get_normal) & cylinder_normal},
+		{0, 0}
+};
+
+static t_func_pair s_sample_funcs[] = {
 		{"sp", (t_f_sample_color) & sphere_sample_color},
 		{"pl", (t_f_sample_color) & plane_sample_color},
 		{"cy", (t_f_sample_color) & cylinder_sample_color},
@@ -71,39 +77,26 @@ int	add_object(t_lexed_line *lex, t_object **objects)
 	set_support_functions(lex->obj_name, (t_object *)obj);
 	ft_memcpy(((char *)obj) + sizeof(t_object), lex->values, \
 			sizeof(float) * lex->nb_of_values);
-	obj->obj.next = NULL;
+	obj->obj.next = 0;
 	append_object(objects, (t_object *)obj);
 	return (0);
 }
 
-void	set_support_functions(const char *type, t_object *obj)
+void* get_function_by_name(const t_func_pair *pairs, const char *name)
 {
-	int		i;
-
-	i = 0;
-	while (s_intersect_funcs[i].name)
-	{
-		if (!ft_strcmp(s_intersect_funcs[i].name, type))
-		{
-			obj->f_intersect = s_intersect_funcs[i].func;
-			break ;
-		}
-		i++;
-	}
-	if (i == sizeof(s_intersect_funcs) / sizeof(s_intersect_funcs[0]))
-		obj->f_intersect = 0;
-	i = 0;
-	while (s_sample_funcs[i].name)
-	{
-		if (!ft_strcmp(s_sample_funcs[i].name, type))
-		{
-			obj->f_sample_color = s_sample_funcs[i].func;
-			return ;
-		}
-		i++;
-	}
-	obj->f_sample_color = 0;
+	for (int i = 0; pairs[i].name; i++)
+		if (!ft_strcmp(pairs[i].name, name))
+			return pairs[i].func;
+	return 0;
 }
+
+void set_support_functions(const char *type, t_object *obj)
+{
+	obj->f_intersect = get_function_by_name(s_intersect_funcs, type);
+	obj->f_get_normal = get_function_by_name(s_normal_funcs, type);
+	obj->f_sample_color = get_function_by_name(s_sample_funcs, type);
+}
+
 
 int	allocate_flt_array(float **num_arr, char *line)
 {

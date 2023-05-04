@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 09:59:30 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 23:39:45 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/04 12:37:55 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,13 @@ typedef t_vec3(		*t_f_check_intersect)(struct s_object* obj,
 										t_vec3 pos,
 										t_vec3 dir);
 typedef t_color(	*t_f_sample_color)(struct s_object* obj, t_vec3 pos);
+typedef t_vec3(		*t_f_get_normal)(struct s_object* obj, t_vec3 pos);
 
 typedef struct s_object
 {
 	struct s_object		*next;
 	t_f_check_intersect	f_intersect;
+	t_f_get_normal		f_get_normal;
 	t_f_sample_color	f_sample_color;
 }	t_object;
 
