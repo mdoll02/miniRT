@@ -26,6 +26,16 @@ static char	*set_type(char	*line, t_lexed_line *lexed_line, t_elements *elements
 	cur = get_word_end(line);
 	if (cur - line > 2)
 		return (NULL);
+	if (cur - line == 1)
+	{
+		if (*line != 'A' && *line != 'C' && *line != 'L')
+			return (NULL);
+	}
+	else
+	{
+		if (*line < 'a' || *line > 'z' || *line + 1 < 'a' || *line + 1 > 'z')
+			return (NULL);
+	}
 	lexed_line->obj_name = malloc(cur - line + 1);
 	if (!lexed_line->obj_name)
 		return (NULL);
@@ -107,7 +117,7 @@ static int	put_lexed_line(t_lexed_line *lex, t_world *world)
 
 static int	check_file_ending(char const *file)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (file[i])
@@ -146,6 +156,8 @@ int	parse_rt_file(char	*file, t_world *world)
 	elements = (t_elements){false, false, false};
 	while (file_content[i])
 	{
+		while (file_content[i] == '\n' && file_content[i])
+			i++;
 		if (lex_line(file_content + i, &lexed_line, &elements))
 			return (4);
 		if (put_lexed_line(&lexed_line, world))
