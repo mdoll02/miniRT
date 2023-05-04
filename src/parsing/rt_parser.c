@@ -39,7 +39,7 @@ static int	set_value(char *line, t_lexed_line *lexed_line, int end, int i)
 	tmp = ft_substr(line, 0, end);
 	if (!tmp)
 		return (1);
-	lexed_line->values[i] = atof(tmp);
+	lexed_line->values[i] = ft_atof(tmp);
 	free(tmp);
 	return (0);
 }

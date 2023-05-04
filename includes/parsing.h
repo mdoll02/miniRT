@@ -25,5 +25,6 @@ void	append_object(t_object **objects, t_object *new_obj);
 int		add_object(t_lexed_line *lex, t_object **objects);
 void	set_support_functions(const char *type, t_object *obj);
 void	free_lexed_line(t_lexed_line *lexed_line);
+float	ft_atof(char *str);
 
 #endif //PARSING_H
