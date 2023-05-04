@@ -16,6 +16,7 @@
 # include "definitions.h"
 
 t_vec3	sphere_intersect(t_sphere *sphere, t_vec3 pos, t_vec3 dir);
+t_vec3	sphere_normal(t_sphere *sphere, t_vec3 pos);
 t_color	sphere_sample_color(t_sphere *sphere, t_vec3 pos);
 t_vec3	plane_intersect(t_plane *plane, t_vec3 pos, t_vec3 dir);
 t_color	plane_sample_color(t_plane *plane, t_vec3 pos);

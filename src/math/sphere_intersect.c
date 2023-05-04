@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 21:28:48 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 23:29:00 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/04 12:34:07 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,11 @@ t_vec3	sphere_intersect(t_sphere *sphere, t_vec3 pos, t_vec3 dir)
 	if (t < 0)
 		return (vec3_init(NAN, NAN, NAN));
 	return (vec3_add(pos, vec3_mul(dir, t)));
+}
+
+t_vec3	sphere_normal(t_sphere *sphere, t_vec3 pos)
+{
+	return (vec3_normalize(vec3_sub(pos, sphere->pos)));
 }
 
 t_color	sphere_sample_color(t_sphere *sphere, t_vec3 pos)
