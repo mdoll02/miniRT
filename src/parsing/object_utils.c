@@ -71,6 +71,7 @@ int	add_object(t_lexed_line *lex, t_object **objects)
 	set_support_functions(lex->obj_name, (t_object *)obj);
 	ft_memcpy(((char *)obj) + sizeof(t_object), lex->values, \
 			sizeof(float) * lex->nb_of_values);
+	obj->obj.next = NULL;
 	append_object(objects, (t_object *)obj);
 	return (0);
 }
