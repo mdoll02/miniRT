@@ -13,6 +13,8 @@ SRC := main.c \
 		parsing/parsing_utils.c \
 		parsing/object_utils.c \
 		parsing/ft_atof.c \
+		parsing/error_handling_utils.c \
+		parsing/set_utils.c \
 		rendering/render.c \
 		math/vector.c \
 		math/vector_2.c \

@@ -16,62 +16,6 @@
 #include <stdlib.h>
 #include "libft.h"
 #include "parsing.h"
-#include "stdio.h"
-
-static char	*set_type(char	*line, t_lexed_line *lexed_line, t_elements *elements)
-{
-	char	*cur;
-
-	line = skip_spaces(line);
-	cur = get_word_end(line);
-	if (cur - line > 2)
-		return (NULL);
-	if (cur - line == 1)
-	{
-		if (*line != 'A' && *line != 'C' && *line != 'L')
-			return (NULL);
-	}
-	else
-	{
-		if (*line < 'a' || *line > 'z' || *line + 1 < 'a' || *line + 1 > 'z')
-			return (NULL);
-	}
-	lexed_line->obj_name = malloc(cur - line + 1);
-	if (!lexed_line->obj_name)
-		return (NULL);
-	ft_strlcpy(lexed_line->obj_name, line, cur - line + 1);
-	if (!ft_strcmp(lexed_line->obj_name, "A"))
-	{
-		if (elements->ambient)
-			return (NULL);
-		elements->ambient = true;
-	}
-	else if (!ft_strcmp(lexed_line->obj_name, "C"))
-	{
-		if (elements->camera)
-			return (NULL);
-		elements->camera = true;
-	}
-	else if (!ft_strcmp(lexed_line->obj_name, "L"))
-	{
-		if (elements->light)
-			return (NULL);
-		elements->light = true;
-	}
-	return (cur);
-}
-
-static int	set_value(char *line, t_lexed_line *lexed_line, int end, int i)
-{
-	char	*tmp;
-
-	tmp = ft_substr(line, 0, end);
-	if (!tmp)
-		return (1);
-	lexed_line->values[i] = ft_atof(tmp);
-	free(tmp);
-	return (0);
-}
 
 static int	lex_line(char *line, t_lexed_line *lexed_line, t_elements *elements)
 {
@@ -115,43 +59,12 @@ static int	put_lexed_line(t_lexed_line *lex, t_world *world)
 	return (0);
 }
 
-static int	check_file_ending(char const *file)
+static int	iterate_file(char *file_content, t_world *world)
 {
-	int	i;
-
-	i = 0;
-	while (file[i])
-		i++;
-	if (file[i - 1] != 't' || file[i - 2] != 'r' || file[i - 3] != '.')
-	{
-		printf("Wrong file ending\n");
-		return (1);
-	}
-	return (0);
-}
-
-int	parse_rt_file(char	*file, t_world *world)
-{
-	t_lexed_line	lexed_line;
-	int				fd;
-	char			*file_content;
-	ssize_t			file_size;
 	int				i;
+	t_lexed_line	lexed_line;
 	t_elements		elements;
 
-	if (check_file_ending(file))
-		return (1);
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		return (1);
-	file_size = get_file_size(file);
-	if (file_size < 0)
-		return (2);
-	file_content = malloc(file_size + 1);
-	if (!file_content)
-		return (3);
-	read(fd, file_content, file_size);
-	file_content[file_size] = '\0';
 	i = 0;
 	elements = (t_elements){false, false, false};
 	while (file_content[i])
@@ -171,4 +84,27 @@ int	parse_rt_file(char	*file, t_world *world)
 	return (0);
 }
 
-// TODO: error handling, shortening of code and implementation of ft_atof
+int	parse_rt_file(char	*file, t_world *world)
+{
+	int				fd;
+	char			*file_content;
+	ssize_t			file_size;
+
+	if (check_file_ending(file))
+		return (1);
+	fd = open(file, O_RDONLY);
+	if (fd < 0)
+		return (1);
+	file_size = get_file_size(file);
+	if (file_size < 0)
+		return (2);
+	file_content = malloc(file_size + 1);
+	if (!file_content)
+		return (3);
+	read(fd, file_content, file_size);
+	file_content[file_size] = '\0';
+	if (iterate_file(file_content, world))
+		return (4);
+	free(file_content);
+	return (0);
+}
