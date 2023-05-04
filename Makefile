@@ -15,6 +15,7 @@ SRC := main.c \
 		rendering/render.c \
 		math/vector.c \
 		math/vector_2.c \
+		math/color.c \
 		math/sphere_intersect.c \
 		math/plane_intersect.c \
 		math/cylinder_intersect.c \
