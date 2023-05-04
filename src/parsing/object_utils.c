@@ -46,7 +46,7 @@ void	append_object(t_object **objects, t_object *new_obj)
 		return ;
 	}
 	cur = *objects;
-	while (cur->next)
+	while (cur && cur->next)
 		cur = cur->next;
 	cur->next = new_obj;
 	new_obj->next = 0;
