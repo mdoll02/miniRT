@@ -104,6 +104,7 @@ int	parse_rt_file(char	*file, t_world *world)
 	if (!file_content)
 		return (3);
 	read(fd, file_content, file_size);
+	file_content[file_size] = '\0';
 	i = 0;
 	while (file_content[i])
 	{
