@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 21:22:52 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/04 12:23:25 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/04 12:30:27 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,9 @@ t_vec3	vec3_refract(t_vec3 vec, t_vec3 normal, float eta)
 	vec_perp = vec3_mul(vec3_add(vec, vec3_mul(normal, cos_theta)), eta);
 	vec_para = vec3_mul(normal, -sqrtf(fabsf(1.0f - vec3_mag(vec_perp))));
 	return (vec3_add(vec_perp, vec_para));
+}
+
+t_vec3	vec3_neg(t_vec3 vec)
+{
+	return ((t_vec3){-vec.x, -vec.y, -vec.z});
 }
