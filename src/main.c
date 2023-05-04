@@ -41,4 +41,5 @@ int	main(int argc, char **argv)
 	render_scene(&minirt);
 	register_hooks(&minirt);
 	mlx_loop(minirt.ctx);
+	return (0);
 }
