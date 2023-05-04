@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 23:22:22 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/02 23:27:54 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/04 12:28:12 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,12 @@ t_vec3	plane_intersect(t_plane *plane, t_vec3 pos, t_vec3 dir)
 	if (t < 0)
 		return (vec3_init(NAN, NAN, NAN));
 	return (vec3_add(pos, vec3_mul(dir, t)));
+}
+
+t_vec3	plane_normal(t_plane *plane, t_vec3 pos)
+{
+	(void)pos;
+	return (plane->normal);
 }
 
 t_color	plane_sample_color(t_plane *plane, t_vec3 pos)
