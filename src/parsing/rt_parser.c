@@ -17,39 +17,12 @@
 #include "libft.h"
 #include "parsing.h"
 
-static char	*set_type(char	*line, t_lexed_line *lexed_line)
-{
-	char	*cur;
-
-	line = skip_spaces(line);
-	cur = get_word_end(line);
-	if (cur == line)
-		return (0);
-	lexed_line->obj_name = malloc(cur - line + 1);
-	if (!lexed_line->obj_name)
-		return (0);
-	ft_strlcpy(lexed_line->obj_name, line, cur - line + 1);
-	return (cur);
-}
-
-static int	set_value(char *line, t_lexed_line *lexed_line, int end, int i)
-{
-	char	*tmp;
-
-	tmp = ft_substr(line, 0, end);
-	if (!tmp)
-		return (1);
-	lexed_line->values[i] = atof(tmp);
-	free(tmp);
-	return (0);
-}
-
-static int	lex_line(char *line, t_lexed_line *lexed_line)
+static int	lex_line(char *line, t_lexed_line *lexed_line, t_elements *elements)
 {
 	char	*cur;
 	int		i;
 
-	line = set_type(line, lexed_line);
+	line = set_type(line, lexed_line, elements);
 	if (!line)
 		return (1);
 	lexed_line->nb_of_values = allocate_flt_array(&lexed_line->values, line);
@@ -86,14 +59,39 @@ static int	put_lexed_line(t_lexed_line *lex, t_world *world)
 	return (0);
 }
 
+static int	iterate_file(char *file_content, t_world *world)
+{
+	int				i;
+	t_lexed_line	lexed_line;
+	t_elements		elements;
+
+	i = 0;
+	elements = (t_elements){false, false, false};
+	while (file_content[i])
+	{
+		while (file_content[i] == '\n' && file_content[i])
+			i++;
+		if (lex_line(file_content + i, &lexed_line, &elements))
+			return (4);
+		if (put_lexed_line(&lexed_line, world))
+			return (5);
+		free_lexed_line(&lexed_line);
+		while (file_content[i] != '\n' && file_content[i])
+			i++;
+		if (file_content[i])
+			i++;
+	}
+	return (0);
+}
+
 int	parse_rt_file(char	*file, t_world *world)
 {
-	t_lexed_line	lexed_line;
 	int				fd;
 	char			*file_content;
 	ssize_t			file_size;
-	int				i;
 
+	if (check_file_ending(file))
+		return (1);
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 		return (1);
@@ -105,18 +103,8 @@ int	parse_rt_file(char	*file, t_world *world)
 		return (3);
 	read(fd, file_content, file_size);
 	file_content[file_size] = '\0';
-	i = 0;
-	while (file_content[i])
-	{
-		lex_line(file_content + i, &lexed_line);
-		put_lexed_line(&lexed_line, world);
-		free_lexed_line(&lexed_line);
-		while (file_content[i] != '\n' && file_content[i])
-			i++;
-		if (file_content[i])
-			i++;
-	}
+	if (iterate_file(file_content, world))
+		return (4);
+	free(file_content);
 	return (0);
 }
-
-// TODO: error handling, shortening of code and implementation of ft_atof
