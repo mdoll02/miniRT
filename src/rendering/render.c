@@ -124,6 +124,7 @@ void render_scene(t_minirt *minirt)
 
 	for (int y = 0; y < HEIGHT; y++)
 	{
+		printf("\rRendering: %d%%", (int) (100.0f * y / HEIGHT));
 		for (int x = 0; x < WIDTH; x++)
 		{
 			// calculate the ray direction for the current pixel
@@ -147,7 +148,7 @@ void render_scene(t_minirt *minirt)
 			mrt_pixel_put(&minirt->img, x, y, pixel_color);
 		}
 	}
-
+	printf("\rRendering: 100%%\n");
 	mlx_put_image_to_window(minirt->ctx, minirt->win, minirt->img.img, 0, 0);
 	mlx_string_put(minirt->ctx, minirt->win, 10, 20, 0xFFF, "Rendering Done!");
 }
