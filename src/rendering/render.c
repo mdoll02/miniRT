@@ -45,7 +45,7 @@ t_vec3 calculate_ray_direction(t_minirt *minirt, int x, int y)
 	});
 }
 
-t_intersection find_closest_intersection(t_minirt *minirt, t_vec3 ray_start, t_vec3 ray_dir)
+t_intersection find_closest_intersection(t_minirt *minirt, t_vec3 ray_start, t_object *ignore, t_vec3 ray_dir)
 {
 	t_intersection closest_isect;
 	t_intersection isect;
@@ -54,6 +54,11 @@ t_intersection find_closest_intersection(t_minirt *minirt, t_vec3 ray_start, t_v
 	closest_isect = (t_intersection){0, INFINITY, {0, 0, 0}, {0, 0, 0}};
 	while (obj)
 	{
+		if (obj == ignore)
+		{
+			obj = obj->next;
+			continue;
+		}
 		isect.obj = obj;
 		isect.pos = obj->f_intersect(obj, ray_start, ray_dir);
 		if (isnan(isect.pos.x) || isnan(isect.pos.y) || isnan(isect.pos.z))
@@ -74,9 +79,9 @@ t_intersection find_closest_intersection(t_minirt *minirt, t_vec3 ray_start, t_v
 }
 
 #define MAX_DEPTH 5
-#define MAT_REFLECTIVE 0.01f
-#define MAT_TRANSPARENCY 0.0f
-#define MAT_IOR 1.5f
+#define MAT_REFLECTIVE .5f
+#define MAT_TRANSPARENCY .0f
+#define MAT_IOR .4f
 
 t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 									 , t_vec3 ray_dir, int depth)
@@ -90,7 +95,7 @@ t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 	if (MAT_REFLECTIVE > 0.0f)
 	{
 		t_vec3 refl_dir = vec3_reflect(ray_dir, closest_isect.normal);
-		isect = find_closest_intersection(mrt, closest_isect.pos, refl_dir);
+		isect = find_closest_intersection(mrt, closest_isect.pos, closest_isect.obj, refl_dir);
 		if (isect.obj)
 		{
 			t_color refl_color = sample_color_at_intersection(mrt, isect, refl_dir, depth + 1);
@@ -101,7 +106,7 @@ t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 	if (MAT_TRANSPARENCY > 0.0f)
 	{
 		t_vec3 refr_dir = vec3_refract(ray_dir, isect.normal, MAT_IOR);
-		isect = find_closest_intersection(mrt, closest_isect.pos, refr_dir);
+		isect = find_closest_intersection(mrt, closest_isect.pos, closest_isect.obj, refr_dir);
 		if (isect.obj)
 		{
 			t_color refr_color = sample_color_at_intersection(mrt, isect, refr_dir, depth + 1);
@@ -125,7 +130,7 @@ void render_scene(t_minirt *minirt)
 			t_vec3 ray_dir = calculate_ray_direction(minirt, x, y);
 
 			// find the closest intersection point of the ray with the objects in the scene
-			t_intersection isect = find_closest_intersection(minirt, ray_start, ray_dir);
+			t_intersection isect = find_closest_intersection(minirt, ray_start, 0, ray_dir);
 
 			// sample the color at the intersection point or the background color
 			if (isect.obj) {
