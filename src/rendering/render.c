@@ -6,11 +6,12 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 20:37:04 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/04 13:51:14 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/04 22:30:27 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <math.h>
+#include <stdio.h>
 #include "rendering.h"
 #include "mlx/mlx.h"
 #include "vec_math.h"
@@ -78,6 +79,15 @@ t_intersection find_closest_intersection(t_minirt *minirt, t_vec3 ray_start, t_o
 	return closest_isect;
 }
 
+int is_illuminated(t_minirt *mrt, t_intersection isect, t_light light)
+{
+	t_vec3 dir = vec3_sub(light.pos, isect.pos);
+	double dist = vec3_mag(dir);
+	dir = vec3_normalize(dir);
+	t_intersection obstructed = find_closest_intersection(mrt, isect.pos, isect.obj, dir);
+	return !obstructed.obj || vec3_mag(vec3_sub(obstructed.pos, isect.pos)) > dist;
+}
+
 #define MAX_DEPTH 5
 #define MAT_REFLECTIVE .5f
 #define MAT_TRANSPARENCY .0f
@@ -113,6 +123,15 @@ t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 			color = color_add(color, color_scale(refr_color, MAT_TRANSPARENCY));
 		}
 	}
+
+	int illuminated = is_illuminated(mrt, closest_isect, mrt->world.light);
+	t_vec3 light_dir = vec3_normalize(vec3_sub(mrt->world.light.pos, closest_isect.pos));
+	double diffuse = vec3_dot(closest_isect.normal, light_dir);
+	if (diffuse < 0)
+		diffuse = -diffuse;
+	color = color_scale(color, diffuse);
+	if (!illuminated)
+		color = color_scale(color, 0.1f);
 	return color;
 }
 
@@ -137,11 +156,6 @@ void render_scene(t_minirt *minirt)
 			if (isect.obj) {
 				pixel_color = sample_color_at_intersection(minirt, isect,
 																 ray_dir, 0);
-				// last ray to light source
-				t_vec3 light_dir = vec3_normalize(vec3_sub(minirt->world.light.pos, isect.pos));
-				t_intersection isect2 = find_closest_intersection(minirt, isect.pos, light_dir);
-				if (!isect2.obj || vec3_mag(vec3_sub(minirt->world.light.pos, isect.pos)) > isect2.t)
-					pixel_color = color_scale(minirt->world.ambient.color, minirt->world.ambient.brightness);
 			}
 			else
 				pixel_color = bg_color;
