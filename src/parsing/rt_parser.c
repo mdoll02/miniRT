@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include "libft.h"
 #include "parsing.h"
+#include "stdio.h"
 
 static char	*set_type(char	*line, t_lexed_line *lexed_line, t_elements *elements)
 {
@@ -104,6 +105,21 @@ static int	put_lexed_line(t_lexed_line *lex, t_world *world)
 	return (0);
 }
 
+static int	check_file_ending(char const *file)
+{
+	int i;
+
+	i = 0;
+	while (file[i])
+		i++;
+	if (file[i - 1] != 't' || file[i - 2] != 'r' || file[i - 3] != '.')
+	{
+		printf("Wrong file ending\n");
+		return (1);
+	}
+	return (0);
+}
+
 int	parse_rt_file(char	*file, t_world *world)
 {
 	t_lexed_line	lexed_line;
@@ -113,6 +129,8 @@ int	parse_rt_file(char	*file, t_world *world)
 	int				i;
 	t_elements		elements;
 
+	if (check_file_ending(file))
+		return (1);
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 		return (1);
