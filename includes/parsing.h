@@ -20,7 +20,7 @@ int		parse_rt_file(char	*file, t_world *world);
 char	*skip_spaces(char *line);
 char	*get_word_end(char *line);
 ssize_t	get_file_size(char *file);
-int		allocate_flt_array(float **num_arr, char *line);
+int		allocate_flt_array(double **num_arr, char *line);
 void	append_object(t_object **objects, t_object *new_obj);
 int		add_object(t_lexed_line *lex, t_object **objects);
 void	set_support_functions(const char *type, t_object *obj);

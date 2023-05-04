@@ -17,20 +17,20 @@
 
 t_vec3 cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 {
-	float a = dir.x * dir.x + dir.z * dir.z;
-	float b = 2 * (dir.x * (pos.x - cylinder->pos.x) + dir.z * (pos.z - cylinder->pos.z));
-	float c = (pos.x - cylinder->pos.x) * (pos.x - cylinder->pos.x) + (pos.z - cylinder->pos.z) * (pos.z - cylinder->pos.z) - cylinder->radius * cylinder->radius;
-	float discriminant = b * b - 4 * a * c;
+	double a = dir.x * dir.x + dir.z * dir.z;
+	double b = 2 * (dir.x * (pos.x - cylinder->pos.x) + dir.z * (pos.z - cylinder->pos.z));
+	double c = (pos.x - cylinder->pos.x) * (pos.x - cylinder->pos.x) + (pos.z - cylinder->pos.z) * (pos.z - cylinder->pos.z) - cylinder->radius * cylinder->radius;
+	double discriminant = b * b - 4 * a * c;
 
 	if (discriminant < 0)
 		return (vec3_init(NAN, NAN, NAN));
 
-	float t1 = (-b - sqrtf(discriminant)) / (2 * a);
-	float t2 = (-b + sqrtf(discriminant)) / (2 * a);
+	double t1 = (-b - sqrt(discriminant)) / (2 * a);
+	double t2 = (-b + sqrt(discriminant)) / (2 * a);
 
-	float y1 = pos.y + t1 * dir.y;
-	float y2 = pos.y + t2 * dir.y;
-	float y = cylinder->pos.y - cylinder->height / 2;
+	double y1 = pos.y + t1 * dir.y;
+	double y2 = pos.y + t2 * dir.y;
+	double y = cylinder->pos.y - cylinder->height / 2;
 
 	if (y1 < y || y1 > y + cylinder->height)
 		t1 = NAN;
@@ -41,7 +41,7 @@ t_vec3 cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 	if (isnan(t1) && isnan(t2))
 		return (vec3_init(NAN, NAN, NAN));
 
-	float t = isnan(t1) ? t2 : isnan(t2) ? t1 : fminf(t1, t2);
+	double t = isnan(t1) ? t2 : isnan(t2) ? t1 : fmin(t1, t2);
 	return (vec3_add(pos, vec3_mul(dir, t)));
 }
 
@@ -50,7 +50,7 @@ t_vec3 cylinder_normal(t_cylinder *cyl, t_vec3 pos)
 	t_vec3 axis;
 	t_vec3 to_pos;
 	t_vec3 normal;
-	float d;
+	double d;
 
 	axis = vec3_normalize(cyl->axis);
 	to_pos = vec3_sub(pos, cyl->pos);

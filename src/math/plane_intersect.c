@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 23:22:22 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/04 12:28:12 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/04 14:03:37 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
 
 t_vec3	plane_intersect(t_plane *plane, t_vec3 pos, t_vec3 dir)
 {
-	float	denom;
-	float	t;
+	double	denom;
+	double	t;
 
 	denom = vec3_dot(plane->normal, dir);
-	if (fabsf(denom) < FLT_EPSILON)
+	if (fabs(denom) < DBL_EPSILON)
 		return (vec3_init(NAN, NAN, NAN));
 	t = vec3_dot(vec3_sub(plane->pos, pos), plane->normal) / denom;
 	if (t < 0)

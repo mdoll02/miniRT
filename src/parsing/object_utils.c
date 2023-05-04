@@ -76,7 +76,7 @@ int	add_object(t_lexed_line *lex, t_object **objects)
 	}
 	set_support_functions(lex->obj_name, (t_object *)obj);
 	ft_memcpy(((char *)obj) + sizeof(t_object), lex->values, \
-			sizeof(float) * lex->nb_of_values);
+			sizeof(double) * lex->nb_of_values);
 	obj->obj.next = 0;
 	append_object(objects, (t_object *)obj);
 	return (0);
@@ -98,7 +98,7 @@ void set_support_functions(const char *type, t_object *obj)
 }
 
 
-int	allocate_flt_array(float **num_arr, char *line)
+int	allocate_flt_array(double **num_arr, char *line)
 {
 	int		nb_of_args;
 
@@ -117,7 +117,7 @@ int	allocate_flt_array(float **num_arr, char *line)
 	}
 	if (!nb_of_args)
 		return (0);
-	*num_arr = malloc(sizeof(float) * nb_of_args);
+	*num_arr = malloc(sizeof(double) * nb_of_args);
 	if (!*num_arr)
 		return (0);
 	return (nb_of_args);

@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 09:59:30 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/04 12:37:55 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/04 13:25:07 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,16 @@ typedef struct s_mlx_image
 
 typedef struct s_vec3
 {
-	float	x;
-	float	y;
-	float	z;
+	double	x;
+	double	y;
+	double	z;
 }	t_vec3;
 
 typedef struct s_color
 {
-	float	r;
-	float	g;
-	float	b;
+	double	r;
+	double	g;
+	double	b;
 }	t_color;
 
 struct				s_object;
@@ -74,7 +74,7 @@ typedef struct s_sphere
 {
 	t_object	obj;
 	t_vec3		pos;
-	float		radius;
+	double		radius;
 	t_color		color;
 }	t_sphere;
 
@@ -83,8 +83,8 @@ typedef struct s_cylinder
 	t_object	obj;
 	t_vec3		pos;
 	t_vec3		axis;
-	float		radius;
-	float		height;
+	double		radius;
+	double		height;
 	t_color		color;
 }	t_cylinder;
 
@@ -97,7 +97,7 @@ typedef union s_any_object {
 
 typedef struct s_ambient
 {
-	float	brightness;
+	double	brightness;
 	t_color	color;
 }	t_ambient;
 
@@ -105,14 +105,14 @@ typedef struct s_camera
 {
 	t_vec3	pos;
 	t_vec3	dir;
-	float	fov;
+	double	fov;
 }	t_camera;
 
 typedef struct s_light
 {
 	t_vec3	pos;
-	float	brightness;
-	t_vec3	color;
+	double	brightness;
+	t_color	color;
 }	t_light;
 
 typedef struct world
@@ -134,8 +134,16 @@ typedef struct s_minirt
 typedef struct s_lexed_line
 {
 	char	*obj_name;
-	float	*values;
+	double	*values;
 	int		nb_of_values;
 }	t_lexed_line;
+
+typedef struct s_intersection
+{
+	t_object	*obj;
+	double		t;
+	t_vec3		pos;
+	t_vec3		normal;
+}	t_intersection;
 
 #endif //DEFINITIONS_H
