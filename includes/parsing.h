@@ -15,6 +15,14 @@
 
 # include "definitions.h"
 # include <unistd.h>
+# include <stdbool.h>
+
+typedef struct s_elements
+{
+	bool	light;
+	bool	camera;
+	bool	ambient;
+}	t_elements;
 
 int		parse_rt_file(char	*file, t_world *world);
 char	*skip_spaces(char *line);

@@ -17,18 +17,36 @@
 #include "libft.h"
 #include "parsing.h"
 
-static char	*set_type(char	*line, t_lexed_line *lexed_line)
+static char	*set_type(char	*line, t_lexed_line *lexed_line, t_elements *elements)
 {
 	char	*cur;
 
 	line = skip_spaces(line);
 	cur = get_word_end(line);
-	if (cur == line)
-		return (0);
+	if (cur - line > 2)
+		return (NULL);
 	lexed_line->obj_name = malloc(cur - line + 1);
 	if (!lexed_line->obj_name)
-		return (0);
+		return (NULL);
 	ft_strlcpy(lexed_line->obj_name, line, cur - line + 1);
+	if (!ft_strcmp(lexed_line->obj_name, "A"))
+	{
+		if (elements->ambient)
+			return (NULL);
+		elements->ambient = true;
+	}
+	else if (!ft_strcmp(lexed_line->obj_name, "C"))
+	{
+		if (elements->camera)
+			return (NULL);
+		elements->camera = true;
+	}
+	else if (!ft_strcmp(lexed_line->obj_name, "L"))
+	{
+		if (elements->light)
+			return (NULL);
+		elements->light = true;
+	}
 	return (cur);
 }
 
@@ -44,12 +62,12 @@ static int	set_value(char *line, t_lexed_line *lexed_line, int end, int i)
 	return (0);
 }
 
-static int	lex_line(char *line, t_lexed_line *lexed_line)
+static int	lex_line(char *line, t_lexed_line *lexed_line, t_elements *elements)
 {
 	char	*cur;
 	int		i;
 
-	line = set_type(line, lexed_line);
+	line = set_type(line, lexed_line, elements);
 	if (!line)
 		return (1);
 	lexed_line->nb_of_values = allocate_flt_array(&lexed_line->values, line);
@@ -93,6 +111,7 @@ int	parse_rt_file(char	*file, t_world *world)
 	char			*file_content;
 	ssize_t			file_size;
 	int				i;
+	t_elements		elements;
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
@@ -106,10 +125,13 @@ int	parse_rt_file(char	*file, t_world *world)
 	read(fd, file_content, file_size);
 	file_content[file_size] = '\0';
 	i = 0;
+	elements = (t_elements){false, false, false};
 	while (file_content[i])
 	{
-		lex_line(file_content + i, &lexed_line);
-		put_lexed_line(&lexed_line, world);
+		if (lex_line(file_content + i, &lexed_line, &elements))
+			return (4);
+		if (put_lexed_line(&lexed_line, world))
+			return (5);
 		free_lexed_line(&lexed_line);
 		while (file_content[i] != '\n' && file_content[i])
 			i++;
