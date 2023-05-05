@@ -88,7 +88,7 @@ int is_illuminated(t_minirt *mrt, t_intersection isect, t_light light)
 }
 
 #define MAX_DEPTH 5
-#define MAT_REFLECTIVE .5f
+#define MAT_REFLECTIVE .0f
 #define MAT_TRANSPARENCY .0f
 #define MAT_IOR .4f
 
@@ -108,7 +108,7 @@ t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 		if (isect.obj)
 		{
 			t_color refl_color = sample_color_at_intersection(mrt, isect, refl_dir, depth + 1);
-			color = color_add(color, color_scale(refl_color, MAT_REFLECTIVE));
+			color = color_add(color_scale(color, 1 - MAT_REFLECTIVE), color_scale(refl_color, MAT_REFLECTIVE));
 		}
 	}
 
@@ -149,10 +149,9 @@ void render_scene(t_minirt *minirt)
 			t_intersection isect = find_closest_intersection(minirt, ray_start, 0, ray_dir);
 
 			// sample the color at the intersection point or the background color
-			if (isect.obj) {
+			if (isect.obj)
 				pixel_color = sample_color_at_intersection(minirt, isect,
 																 ray_dir, 0);
-			}
 			else
 				pixel_color = bg_color;
 			mrt_pixel_put(&minirt->img, x, y, pixel_color);
