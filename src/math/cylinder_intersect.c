@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 23:06:28 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/05 10:47:36 by mdoll            ###   ########.fr       */
+/*   Updated: 2023/05/08 10:45:09 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_vec3 cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 
 	double a = vec3_dot(dir, dir) - pow(vec3_dot(dir, cylinder->axis), 2);
 	double b = 2 * (vec3_dot(dir, oc) - vec3_dot(dir, cylinder->axis) * vec3_dot(oc, cylinder->axis));
-	double c = vec3_dot(oc, oc) - pow(vec3_dot(oc, cylinder->axis), 2) - pow(cylinder->radius, 2);
+	double c = vec3_dot(oc, oc) - pow(vec3_dot(oc, cylinder->axis), 2) - pow(cylinder->diameter / 2, 2);
 
 	double discr = b * b - 4 * a * c;
 

@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 09:59:30 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/04 13:25:07 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/08 10:45:09 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ typedef struct s_cylinder
 	t_object	obj;
 	t_vec3		pos;
 	t_vec3		axis;
-	double		radius;
+	double		diameter;
 	double		height;
 	t_color		color;
 }	t_cylinder;
