@@ -48,14 +48,20 @@ t_vec3 cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 	return point;
 }
 
-t_vec3 cylinder_normal(t_cylinder *cyl, t_vec3 pos)
+t_vec3	cylinder_normal(t_cylinder *cyl, t_vec3 pos)
 {
-	t_vec3 axis = vec3_normalize(cyl->axis);
-	t_vec3 to_pos = vec3_sub(pos, cyl->pos);
-	double proj_len = vec3_dot(to_pos, axis);
-	t_vec3 proj_vec = vec3_add(cyl->pos, vec3_mul(axis, proj_len));
-	t_vec3 normal = vec3_normalize(vec3_sub(pos, proj_vec));
-	return normal;
+	t_vec3	axis;
+	t_vec3	to_pos;
+	double	proj_len;
+	t_vec3	proj_vec;
+	t_vec3	normal;
+
+	axis = vec3_normalize(cyl->axis);
+	to_pos = vec3_sub(pos, cyl->pos);
+	proj_len = vec3_dot(to_pos, axis);
+	proj_vec = vec3_add(cyl->pos, vec3_mul(axis, proj_len));
+	normal = vec3_normalize(vec3_sub(pos, proj_vec));
+	return (normal);
 }
 
 
