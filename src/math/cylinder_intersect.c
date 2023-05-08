@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 23:06:28 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/04 22:32:52 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/05 10:47:36 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ t_vec3 cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 
 	t_vec3 point = vec3_add(pos, vec3_mul(dir, t1));
 	t_vec3 p1_to_p = vec3_sub(point, cylinder->pos);
-	double proj_len = vec3_dot(p1_to_p, cylinder->axis);
+	double proj_len = vec3_dot(p1_to_p, cylinder->axis) + cylinder->height * 0.5;
 
 	if (proj_len < 0 || proj_len > cylinder->height)
 		return (t_vec3){INFINITY, INFINITY, INFINITY};
