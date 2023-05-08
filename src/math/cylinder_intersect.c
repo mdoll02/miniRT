@@ -41,10 +41,8 @@ t_vec3 cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 	t_vec3 point = vec3_add(pos, vec3_mul(dir, t1));
 	t_vec3 p1_to_p = vec3_sub(point, cylinder->pos);
 	double proj_len = vec3_dot(p1_to_p, cylinder->axis) + cylinder->height * 0.5;
-
-	if (proj_len < 0 || proj_len > cylinder->height)
+	if (proj_len < -cylinder->height / 2 || proj_len > cylinder->height / 2)
 		return (t_vec3){INFINITY, INFINITY, INFINITY};
-
 	return point;
 }
 
