@@ -92,13 +92,20 @@ t_vec3 cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 	proj_len = vec3_dot(p1_to_p, cylinder->axis) + cylinder->height * 0.5;
 	inter_top = top_intersect(cylinder, pos, dir);
 	inter_bot = bottom_intersect(cylinder, pos, dir);
-	if (inter_bot.x != INFINITY || inter_bot.y != INFINITY || inter_bot.z != INFINITY)
-		return (inter_bot);
+	if (proj_len >= 0 && proj_len <= cylinder->height)
+		return (point);
+	if ((inter_bot.x != INFINITY || inter_bot.y != INFINITY || inter_bot.z != INFINITY) && (inter_top.x != INFINITY || inter_top.y != INFINITY || inter_top.z != INFINITY))
+	{
+		if (vec3_mag(vec3_sub(inter_bot, pos)) < vec3_mag(vec3_sub(inter_top, pos)))
+			return (inter_bot);
+		else
+			return (inter_top);
+	}
 	if (inter_top.x != INFINITY || inter_top.y != INFINITY || inter_top.z != INFINITY)
 		return (inter_top);
-	if (proj_len < 0 || proj_len > cylinder->height)
-		return ((t_vec3){INFINITY, INFINITY, INFINITY});
-	return (point);
+	if (inter_bot.x != INFINITY || inter_bot.y != INFINITY || inter_bot.z != INFINITY)
+		return (inter_bot);
+	return ((t_vec3){INFINITY, INFINITY, INFINITY});
 }
 
 t_vec3	cylinder_normal(t_cylinder *cyl, t_vec3 pos)
