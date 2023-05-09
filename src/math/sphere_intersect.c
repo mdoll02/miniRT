@@ -16,10 +16,11 @@
 
 t_vec3	sphere_intersect(t_sphere *sphere, t_vec3 pos, t_vec3 dir)
 {
+	double radius = sphere->diameter / 2;
 	t_vec3 oc = vec3_sub(pos, sphere->pos);
 	double a = vec3_dot(dir, dir);
 	double b = 2 * vec3_dot(oc, dir);
-	double c = vec3_dot(oc, oc) - sphere->radius * sphere->radius;
+	double c = vec3_dot(oc, oc) - radius * radius;
 	double discriminant = b * b - 4 * a * c;
 
 	if (discriminant < 0)
