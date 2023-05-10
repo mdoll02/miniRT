@@ -128,7 +128,7 @@ t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 	if (diffuse < 0)
 		diffuse = -diffuse;
 	if (!illuminated)
-		return (color_scale(color, 0.1f));
+		return (color_scale(color, mrt->world.ambient.brightness));
 	return (color_scale(color, diffuse));
 }
 
