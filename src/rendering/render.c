@@ -91,6 +91,7 @@ int is_illuminated(t_minirt *mrt, t_intersection isect, t_light light)
 #define MAT_REFLECTIVE .5f
 #define MAT_TRANSPARENCY .0f
 #define MAT_IOR .4f
+#define SHININESS 32
 
 t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 									 , t_vec3 ray_dir, int depth)
@@ -125,11 +126,14 @@ t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 	int illuminated = is_illuminated(mrt, closest_isect, mrt->world.light);
 	t_vec3 light_dir = vec3_normalize(vec3_sub(mrt->world.light.pos, closest_isect.pos));
 	double diffuse = vec3_dot(closest_isect.normal, light_dir);
+	t_vec3 view_dir = vec3_normalize(vec3_sub(mrt->world.camera.pos, closest_isect.pos));
+	t_vec3 halfway_dir = vec3_normalize(vec3_add(light_dir, view_dir));
+	double specular = pow(fmax(vec3_dot(closest_isect.normal, halfway_dir), 0.0), SHININESS);
 	if (diffuse < 0)
 		diffuse = -diffuse;
 	if (!illuminated)
 		return (color_scale(color, mrt->world.ambient.brightness));
-	return (color_scale(color, diffuse));
+	return (color_scale(color, mrt->world.ambient.brightness + diffuse + specular));
 }
 
 void render_scene(t_minirt *minirt)
