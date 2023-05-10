@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 23:06:28 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/08 10:45:09 by mdoll            ###   ########.fr       */
+/*   Updated: 2023/05/10 09:47:25 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,15 @@
 
 t_vec3	top_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 {
-	t_plane	top;
-	t_vec3	inter_top;
-	t_vec3	p1_to_top;
+	t_plane			top;
+	t_vec3			inter_top;
+	t_vec3			p1_to_top;
+	t_intersection	inter;
 
 	top.pos = vec3_add(cylinder->pos, vec3_mul(cylinder->axis, cylinder->height * 0.5));
 	top.normal = cylinder->axis;
-	inter_top = plane_intersect(&top, pos, dir);
+	inter = plane_intersect(&top, pos, dir);
+	inter_top = inter.pos;
 	if (isnan(inter_top.x) || isnan(inter_top.y) || isnan(inter_top.z))
 		return ((t_vec3){INFINITY, INFINITY, INFINITY});
 	else
@@ -38,13 +40,15 @@ t_vec3	top_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 
 t_vec3	bottom_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 {
-	t_plane	bot;
-	t_vec3	inter_bot;
-	t_vec3	p1_to_bot;
+	t_plane			bot;
+	t_vec3			inter_bot;
+	t_vec3			p1_to_bot;
+	t_intersection	inter;
 
 	bot.pos = vec3_sub(cylinder->pos, vec3_mul(cylinder->axis, cylinder->height * 0.5));
 	bot.normal = cylinder->axis;
-	inter_bot = plane_intersect(&bot, pos, dir);
+	inter = plane_intersect(&bot, pos, dir);
+	inter_bot = inter.pos;
 	if (isnan(inter_bot.x) || isnan(inter_bot.y) || isnan(inter_bot.z))
 		return ((t_vec3){INFINITY, INFINITY, INFINITY});
 	else
@@ -56,21 +60,22 @@ t_vec3	bottom_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 	return ((t_vec3){INFINITY, INFINITY, INFINITY});
 }
 
-t_vec3 cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
+t_intersection	cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 {
-	t_vec3	oc;
-	double	a;
-	double	b;
-	double	c;
-	double	discr;
-	double	t1;
-	double	t2;
-	double	temp;
-	t_vec3	point;
-	t_vec3	p1_to_p;
-	double	proj_len;
-	t_vec3	inter_top;
-	t_vec3	inter_bot;
+	t_vec3			oc;
+	double			a;
+	double			b;
+	double			c;
+	double			discr;
+	double			t1;
+	double			t2;
+	double			temp;
+	t_vec3			point;
+	t_vec3			p1_to_p;
+	double			proj_len;
+	t_vec3			inter_top;
+	t_vec3			inter_bot;
+	t_intersection	inter;
 
 	oc = vec3_sub(pos, cylinder->pos);
 	a = vec3_dot(dir, dir) - pow(vec3_dot(dir, cylinder->axis), 2);
@@ -78,7 +83,10 @@ t_vec3 cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 	c = vec3_dot(oc, oc) - pow(vec3_dot(oc, cylinder->axis), 2) - pow(cylinder->diameter / 2, 2);
 	discr = b * b - 4 * a * c;
 	if (discr < 0)
-		return ((t_vec3){INFINITY, INFINITY, INFINITY});
+	{
+		inter.pos = (t_vec3){INFINITY, INFINITY, INFINITY};
+		return (inter);
+	}
 	t1 = (-b + sqrt(discr)) / (2 * a);
 	t2 = (-b - sqrt(discr)) / (2 * a);
 	if (t1 > t2)
@@ -93,19 +101,40 @@ t_vec3 cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 	inter_top = top_intersect(cylinder, pos, dir);
 	inter_bot = bottom_intersect(cylinder, pos, dir);
 	if (proj_len >= 0 && proj_len <= cylinder->height)
-		return (point);
+	{
+		inter.pos = point;
+		inter.normal = cylinder_normal(cylinder, point);
+		return (inter);
+	}
 	if ((inter_bot.x != INFINITY || inter_bot.y != INFINITY || inter_bot.z != INFINITY) && (inter_top.x != INFINITY || inter_top.y != INFINITY || inter_top.z != INFINITY))
 	{
 		if (vec3_mag(vec3_sub(inter_bot, pos)) < vec3_mag(vec3_sub(inter_top, pos)))
-			return (inter_bot);
+		{
+			inter.pos = inter_bot;
+			inter.normal = vec3_neg(cylinder->axis);
+			return (inter);
+		}
 		else
-			return (inter_top);
+		{
+			inter.pos = inter_top;
+			inter.normal = cylinder->axis;
+			return (inter);
+		}
 	}
 	if (inter_top.x != INFINITY || inter_top.y != INFINITY || inter_top.z != INFINITY)
-		return (inter_top);
+	{
+		inter.pos = inter_top;
+		inter.normal = cylinder->axis;
+		return (inter);
+	}
 	if (inter_bot.x != INFINITY || inter_bot.y != INFINITY || inter_bot.z != INFINITY)
-		return (inter_bot);
-	return ((t_vec3){INFINITY, INFINITY, INFINITY});
+	{
+		inter.pos = inter_bot;
+		inter.normal = vec3_neg(cylinder->axis);
+		return (inter);
+	}
+	inter.pos = (t_vec3){INFINITY, INFINITY, INFINITY};
+	return (inter);
 }
 
 t_vec3	cylinder_normal(t_cylinder *cyl, t_vec3 pos)

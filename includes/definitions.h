@@ -48,9 +48,17 @@ typedef struct s_color
 
 struct				s_object;
 
-typedef t_vec3(		*t_f_check_intersect)(struct s_object* obj,
-										t_vec3 pos,
-										t_vec3 dir);
+typedef struct s_intersection
+{
+	struct s_object	*obj;
+	double			t;
+	t_vec3			pos;
+	t_vec3			normal;
+}	t_intersection;
+
+typedef	t_intersection(	*t_f_check_intersect)(struct s_object* obj,
+														t_vec3 pos,
+														t_vec3 dir);
 typedef t_color(	*t_f_sample_color)(struct s_object* obj, t_vec3 pos);
 typedef t_vec3(		*t_f_get_normal)(struct s_object* obj, t_vec3 pos);
 
@@ -138,12 +146,6 @@ typedef struct s_lexed_line
 	int		nb_of_values;
 }	t_lexed_line;
 
-typedef struct s_intersection
-{
-	t_object	*obj;
-	double		t;
-	t_vec3		pos;
-	t_vec3		normal;
-}	t_intersection;
+
 
 #endif //DEFINITIONS_H

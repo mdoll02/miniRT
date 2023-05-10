@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 20:37:04 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/04 22:30:27 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/10 09:40:55 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,13 @@ t_intersection find_closest_intersection(t_minirt *minirt, t_vec3 ray_start, t_o
 			obj = obj->next;
 			continue;
 		}
+		isect = obj->f_intersect(obj, ray_start, ray_dir);
 		isect.obj = obj;
-		isect.pos = obj->f_intersect(obj, ray_start, ray_dir);
 		if (isnan(isect.pos.x) || isnan(isect.pos.y) || isnan(isect.pos.z))
 		{
 			obj = obj->next;
 			continue;
 		}
-		isect.normal = obj->f_get_normal(obj, isect.pos);
 		isect.t = vec3_mag(vec3_sub(isect.pos, ray_start));
 
 		if (isect.t < closest_isect.t && isfinite(isect.t))
