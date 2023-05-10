@@ -91,7 +91,7 @@ int is_illuminated(t_minirt *mrt, t_intersection isect, t_light light)
 #define MAT_REFLECTIVE .5f
 #define MAT_TRANSPARENCY .0f
 #define MAT_IOR .4f
-#define SHININESS -1
+#define SHININESS 32
 
 t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 									 , t_vec3 ray_dir, int depth)
