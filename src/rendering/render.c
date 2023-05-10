@@ -122,16 +122,14 @@ t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 			color = color_add(color, color_scale(refr_color, MAT_TRANSPARENCY));
 		}
 	}
-
 	int illuminated = is_illuminated(mrt, closest_isect, mrt->world.light);
 	t_vec3 light_dir = vec3_normalize(vec3_sub(mrt->world.light.pos, closest_isect.pos));
 	double diffuse = vec3_dot(closest_isect.normal, light_dir);
 	if (diffuse < 0)
 		diffuse = -diffuse;
-	color = color_scale(color, diffuse);
 	if (!illuminated)
-		color = color_scale(color, 0.1f);
-	return color;
+		return (color_scale(color, 0.1f));
+	return (color_scale(color, diffuse));
 }
 
 void render_scene(t_minirt *minirt)
@@ -147,7 +145,6 @@ void render_scene(t_minirt *minirt)
 		{
 			// calculate the ray direction for the current pixel
 			t_vec3 ray_dir = calculate_ray_direction(minirt, x, y);
-
 			// find the closest intersection point of the ray with the objects in the scene
 			t_intersection isect = find_closest_intersection(minirt, ray_start, 0, ray_dir);
 
