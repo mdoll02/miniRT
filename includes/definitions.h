@@ -82,7 +82,7 @@ typedef struct s_sphere
 {
 	t_object	obj;
 	t_vec3		pos;
-	double		radius;
+	double		diameter;
 	t_color		color;
 }	t_sphere;
 
