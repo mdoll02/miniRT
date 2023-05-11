@@ -84,7 +84,9 @@ int is_illuminated(t_minirt *mrt, t_intersection isect, t_light light)
 	double dist = vec3_mag(dir);
 	dir = vec3_normalize(dir);
 	t_intersection obstructed = find_closest_intersection(mrt, isect.pos, isect.obj, dir);
-	return !obstructed.obj || vec3_mag(vec3_sub(obstructed.pos, isect.pos)) > dist;
+	if (!obstructed.obj || vec3_mag(vec3_sub(obstructed.pos, isect.pos)) > dist)
+		return (1);
+	return (0);
 }
 
 #define MAX_DEPTH 5
