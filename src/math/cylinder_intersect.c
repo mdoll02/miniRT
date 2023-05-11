@@ -150,7 +150,6 @@ t_vec3	cylinder_normal(t_cylinder *cyl, t_vec3 pos)
 	proj_len = vec3_dot(to_pos, axis);
 	proj_vec = vec3_add(cyl->pos, vec3_mul(axis, proj_len));
 	normal = vec3_normalize(vec3_sub(pos, proj_vec));
-	normal.x = -normal.x;
 	return (normal);
 }
 
