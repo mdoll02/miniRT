@@ -83,9 +83,13 @@ int is_illuminated(t_minirt *mrt, t_intersection isect, t_light light)
 	t_vec3 dir = vec3_sub(light.pos, isect.pos);
 	double dist = vec3_mag(dir);
 	dir = vec3_normalize(dir);
-	t_intersection obstructed = find_closest_intersection(mrt, isect.pos, isect.obj, dir);
-	if (!obstructed.obj || vec3_mag(vec3_sub(obstructed.pos, isect.pos)) > dist)
-		return (1);
+	float angle = vec3_dot(isect.normal, dir);
+	if (angle > 0.0f)
+	{
+		t_intersection obstructed = find_closest_intersection(mrt, isect.pos, isect.obj, dir);
+		if (!obstructed.obj || vec3_mag(vec3_sub(obstructed.pos, isect.pos)) > dist)
+			return (1);
+	}
 	return (0);
 }
 
