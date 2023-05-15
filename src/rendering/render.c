@@ -83,14 +83,21 @@ int is_illuminated(t_minirt *mrt, t_intersection isect, t_light light)
 	t_vec3 dir = vec3_sub(light.pos, isect.pos);
 	double dist = vec3_mag(dir);
 	dir = vec3_normalize(dir);
-	t_intersection obstructed = find_closest_intersection(mrt, isect.pos, isect.obj, dir);
-	return !obstructed.obj || vec3_mag(vec3_sub(obstructed.pos, isect.pos)) > dist;
+	float angle = vec3_dot(isect.normal, dir);
+	if (angle > 0.0f)
+	{
+		t_intersection obstructed = find_closest_intersection(mrt, isect.pos, isect.obj, dir);
+		if (!obstructed.obj || vec3_mag(vec3_sub(obstructed.pos, isect.pos)) > dist)
+			return (1);
+	}
+	return (0);
 }
 
 #define MAX_DEPTH 5
 #define MAT_REFLECTIVE .0f
 #define MAT_TRANSPARENCY .0f
 #define MAT_IOR .4f
+#define SHININESS 32
 
 t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 									 , t_vec3 ray_dir, int depth)
@@ -125,10 +132,17 @@ t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 	int illuminated = is_illuminated(mrt, closest_isect, mrt->world.light);
 	t_vec3 light_dir = vec3_normalize(vec3_sub(mrt->world.light.pos, closest_isect.pos));
 	double diffuse = vec3_dot(closest_isect.normal, light_dir);
+	if (SHININESS > 0)
+	{
+		t_vec3 view_dir = vec3_normalize(vec3_sub(mrt->world.camera.pos, closest_isect.pos));
+		t_vec3 halfway_dir = vec3_normalize(vec3_add(light_dir, view_dir));
+		double specular = pow(fmax(vec3_dot(closest_isect.normal, halfway_dir), 0.0), SHININESS);
+		diffuse = mrt->world.ambient.brightness + diffuse + specular;
+	}
 	if (diffuse < 0)
 		diffuse = -diffuse;
 	if (!illuminated)
-		return (color_scale(color, 0.1f));
+		return (color_scale(color, mrt->world.ambient.brightness));
 	return (color_scale(color, diffuse));
 }
 
@@ -140,7 +154,6 @@ void render_scene(t_minirt *minirt)
 
 	for (int y = 0; y < HEIGHT; y++)
 	{
-		printf("\rRendering: %d%%", (int) (100.0f * y / HEIGHT));
 		for (int x = 0; x < WIDTH; x++)
 		{
 			// calculate the ray direction for the current pixel
@@ -156,6 +169,7 @@ void render_scene(t_minirt *minirt)
 				pixel_color = bg_color;
 			mrt_pixel_put(&minirt->img, x, y, pixel_color);
 		}
+		mlx_put_image_to_window(minirt->ctx, minirt->win, minirt->img.img, 0, 0);
 	}
 	printf("\rRendering: 100%%\n");
 	mlx_put_image_to_window(minirt->ctx, minirt->win, minirt->img.img, 0, 0);
