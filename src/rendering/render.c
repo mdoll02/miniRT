@@ -29,21 +29,26 @@ static void	mrt_pixel_put(t_mlx_image* img, int x, int y, t_color color)
 {
 	char	*dst;
 
-	dst = img->addr + (y * img->line_length + x
-			* (img->bbp / 8));
+	dst = img->addr + ((HEIGHT - 1 - y) * img->line_length + \
+										x * (img->bbp / 8));
 	*(unsigned int *)dst = color_to_int(color);
 }
 
-t_vec3 calculate_ray_direction(t_minirt *minirt, int x, int y)
+t_vec3	calculate_ray_direction(t_minirt *minirt, int x, int y)
 {
-	float u = (float)x / WIDTH;
-	float v = (float)y / HEIGHT;
+	double	u;
+	double	v;
+	double	fov_radians;
+	t_vec3	ray_dir;
 
-	return vec3_normalize((t_vec3){
-			(2 * u - 1) * tanf(minirt->world.camera.fov / 2),
-			(2 * v - 1) * tanf(minirt->world.camera.fov / 2) / (WIDTH / HEIGHT),
-			-1
-	});
+	u = (double)x / WIDTH;
+	v = (double)y / HEIGHT;
+	fov_radians = minirt->world.camera.fov * M_PI / 180.0;
+	ray_dir.x = (2 * u - 1) * tan(fov_radians / 2);
+	ray_dir.y = (2 * v - 1) * tan(fov_radians / 2) / (WIDTH / HEIGHT);
+	ray_dir.z = -1;
+	ray_dir = vec3_normalize(ray_dir);
+	return (ray_dir);
 }
 
 t_intersection find_closest_intersection(t_minirt *minirt, t_vec3 ray_start, t_object *ignore, t_vec3 ray_dir)
