@@ -146,30 +146,38 @@ t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 	return (color_scale(color, diffuse));
 }
 
-void render_scene(t_minirt *minirt)
+void	render_scene(t_minirt *minirt)
 {
-	t_vec3 ray_start = minirt->world.camera.pos;
-	t_color bg_color = minirt->world.ambient.color;
-	t_color pixel_color;
+	t_vec3			ray_start;
+	t_color			bg_color;
+	t_color			pixel_color;
+	t_vec3			ray_dir;
+	t_intersection	isect;
+	int				y;
+	int				x;
 
-	for (int y = 0; y < HEIGHT; y++)
+	ray_start = minirt->world.camera.pos;
+	bg_color = minirt->world.ambient.color;
+	y = 0;
+	x = 0;
+	while (y < HEIGHT)
 	{
-		for (int x = 0; x < WIDTH; x++)
+		x = 0;
+		while (x < WIDTH)
 		{
-			// calculate the ray direction for the current pixel
-			t_vec3 ray_dir = calculate_ray_direction(minirt, x, y);
-			// find the closest intersection point of the ray with the objects in the scene
-			t_intersection isect = find_closest_intersection(minirt, ray_start, 0, ray_dir);
-
-			// sample the color at the intersection point or the background color
+			ray_dir = calculate_ray_direction(minirt, x, y);
+			isect = find_closest_intersection(minirt, ray_start, 0, ray_dir);
 			if (isect.obj)
-				pixel_color = sample_color_at_intersection(minirt, isect,
-																 ray_dir, 0);
+				pixel_color = sample_color_at_intersection(minirt, \
+					isect, ray_dir, 0);
 			else
 				pixel_color = bg_color;
 			mrt_pixel_put(&minirt->img, x, y, pixel_color);
+			x++;
 		}
-		mlx_put_image_to_window(minirt->ctx, minirt->win, minirt->img.img, 0, 0);
+		mlx_put_image_to_window(minirt->ctx, minirt->win, \
+			minirt->img.img, 0, 0);
+		y++;
 	}
 	printf("\rRendering: 100%%\n");
 	mlx_put_image_to_window(minirt->ctx, minirt->win, minirt->img.img, 0, 0);
