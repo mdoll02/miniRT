@@ -25,7 +25,7 @@ static unsigned int	color_to_int(t_color color)
 		| ((int)color.b & 0xff));
 }
 
-static void	mrt_pixel_put(t_mlx_image* img, int x, int y, t_color color)
+static void	mrt_pixel_put(t_mlx_image *img, int x, int y, t_color color)
 {
 	char	*dst;
 
@@ -53,47 +53,50 @@ t_vec3	calculate_ray_direction(t_minirt *minirt, int x, int y)
 	return (ray_dir);
 }
 
-t_intersection find_closest_intersection(t_minirt *minirt, t_vec3 ray_start, t_object *ignore, t_vec3 ray_dir)
+t_intersection	find_closest_intersection(t_minirt *minirt, t_vec3 ray_start, t_object *ignore, t_vec3 ray_dir)
 {
-	t_intersection closest_isect;
-	t_intersection isect;
-	t_object *obj = minirt->world.objects;
+	t_intersection	closest_isect;
+	t_intersection	isect;
+	t_object		*obj;
 
+	obj = minirt->world.objects;
 	closest_isect = (t_intersection){0, INFINITY, {0, 0, 0}, {0, 0, 0}};
 	while (obj)
 	{
 		if (obj == ignore)
 		{
 			obj = obj->next;
-			continue;
+			continue ;
 		}
 		isect = obj->f_intersect(obj, ray_start, ray_dir);
 		isect.obj = obj;
 		if (isnan(isect.pos.x) || isnan(isect.pos.y) || isnan(isect.pos.z))
 		{
 			obj = obj->next;
-			continue;
+			continue ;
 		}
 		isect.t = vec3_mag(vec3_sub(isect.pos, ray_start));
-
 		if (isect.t < closest_isect.t && isfinite(isect.t))
 			closest_isect = isect;
-
 		obj = obj->next;
 	}
-
-	return closest_isect;
+	return (closest_isect);
 }
 
-int is_illuminated(t_minirt *mrt, t_intersection isect, t_light light)
+int	is_illuminated(t_minirt *mrt, t_intersection isect, t_light light)
 {
-	t_vec3 dir = vec3_sub(light.pos, isect.pos);
-	double dist = vec3_mag(dir);
+	t_vec3			dir;
+	double			dist;
+	double			angle;
+	t_intersection	obstructed;
+
+	dir = vec3_sub(light.pos, isect.pos);
+	dist = vec3_mag(dir);
 	dir = vec3_normalize(dir);
-	float angle = vec3_dot(isect.normal, dir);
+	angle = vec3_dot(isect.normal, dir);
 	if (angle > 0.0f)
 	{
-		t_intersection obstructed = find_closest_intersection(mrt, isect.pos, isect.obj, dir);
+		obstructed = find_closest_intersection(mrt, isect.pos, isect.obj, dir);
 		if (!obstructed.obj || vec3_mag(vec3_sub(obstructed.pos, isect.pos)) > dist)
 			return (1);
 	}
