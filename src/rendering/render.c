@@ -40,12 +40,14 @@ t_vec3	calculate_ray_direction(t_minirt *minirt, int x, int y)
 	double	v;
 	double	fov_radians;
 	t_vec3	ray_dir;
+	double	ar;
 
 	u = (double)x / WIDTH;
 	v = (double)y / HEIGHT;
+	ar = (double)WIDTH / HEIGHT;
 	fov_radians = minirt->world.camera.fov * M_PI / 180.0;
 	ray_dir.x = (2 * u - 1) * tan(fov_radians / 2);
-	ray_dir.y = (2 * v - 1) * tan(fov_radians / 2) / (WIDTH / HEIGHT);
+	ray_dir.y = (2 * v - 1) * tan(fov_radians / 2) / ar;
 	ray_dir.z = -1;
 	ray_dir = vec3_normalize(ray_dir);
 	return (ray_dir);
