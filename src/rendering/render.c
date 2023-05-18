@@ -188,7 +188,6 @@ void	render_scene(t_minirt *minirt)
 			minirt->img.img, 0, 0);
 		y--;
 	}
-	printf("\rRendering: 100%%\n");
 	mlx_put_image_to_window(minirt->ctx, minirt->win, minirt->img.img, 0, 0);
 	mlx_string_put(minirt->ctx, minirt->win, 10, 20, 0xFFF, "Rendering Done!");
 }
