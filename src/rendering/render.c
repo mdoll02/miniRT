@@ -104,20 +104,20 @@ int	is_illuminated(t_minirt *mrt, t_intersection isect, t_light light)
 }
 
 #define MAX_DEPTH 5
-#define MAT_REFLECTIVE .0f
+#define MAT_REFLECTIVE .3f
 #define MAT_TRANSPARENCY .0f
 #define MAT_IOR .4f
-#define SHININESS 32
 
 t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 									 , t_vec3 ray_dir, int depth)
 {
-	if (depth >= MAX_DEPTH)
-		return (t_color){0, 0, 0};
-
-	t_color color = closest_isect.obj->f_sample_color(closest_isect.obj, closest_isect.pos);
-
+	t_color color = (t_color){0, 0, 0};
+	t_color object_color;
 	t_intersection isect;
+
+	if (depth >= MAX_DEPTH)
+		return color;
+	object_color = closest_isect.obj->f_sample_color(closest_isect.obj, closest_isect.pos);
 	if (MAT_REFLECTIVE > 0.0f)
 	{
 		t_vec3 refl_dir = vec3_reflect(ray_dir, closest_isect.normal);
@@ -125,13 +125,12 @@ t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 		if (isect.obj)
 		{
 			t_color refl_color = sample_color_at_intersection(mrt, isect, refl_dir, depth + 1);
-			color = color_add(color_scale(color, 1 - MAT_REFLECTIVE), color_scale(refl_color, MAT_REFLECTIVE));
+			color = color_add(color, color_scale(refl_color, MAT_REFLECTIVE));
 		}
 	}
-
 	if (MAT_TRANSPARENCY > 0.0f)
 	{
-		t_vec3 refr_dir = vec3_refract(ray_dir, isect.normal, MAT_IOR);
+		t_vec3 refr_dir = vec3_refract(ray_dir, closest_isect.normal, MAT_IOR);
 		isect = find_closest_intersection(mrt, closest_isect.pos, closest_isect.obj, refr_dir);
 		if (isect.obj)
 		{
@@ -142,18 +141,19 @@ t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 	int illuminated = is_illuminated(mrt, closest_isect, mrt->world.light);
 	t_vec3 light_dir = vec3_normalize(vec3_sub(mrt->world.light.pos, closest_isect.pos));
 	double diffuse = vec3_dot(closest_isect.normal, light_dir);
-	if (SHININESS > 0)
+	if (diffuse < 0)
+		diffuse = 0;
+	if (MAT_REFLECTIVE > 0 && illuminated)
 	{
 		t_vec3 view_dir = vec3_normalize(vec3_sub(mrt->world.camera.pos, closest_isect.pos));
 		t_vec3 halfway_dir = vec3_normalize(vec3_add(light_dir, view_dir));
-		double specular = pow(fmax(vec3_dot(closest_isect.normal, halfway_dir), 0.0), SHININESS);
-		diffuse = mrt->world.ambient.brightness + diffuse + specular;
+		double specular = pow(fmax(vec3_dot(closest_isect.normal, halfway_dir), 0.0), MAT_REFLECTIVE * 12);
+		diffuse += specular;
 	}
-	if (diffuse < 0)
-		diffuse = -diffuse;
-	if (!illuminated)
-		return (color_scale(color, mrt->world.ambient.brightness));
-	return (color_scale(color, diffuse));
+	t_color lighting = color_scale(object_color, diffuse);
+	if (illuminated)
+		return color_add(color, lighting);
+	return color_add(color, color_scale(object_color, mrt->world.ambient.brightness));
 }
 
 void	render_scene(t_minirt *minirt)
