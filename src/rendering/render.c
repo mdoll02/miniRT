@@ -168,9 +168,8 @@ void	render_scene(t_minirt *minirt)
 
 	ray_start = minirt->world.camera.pos;
 	bg_color = minirt->world.ambient.color;
-	y = 0;
-	x = 0;
-	while (y < HEIGHT)
+	y = HEIGHT - 1;
+	while (y >= 0)
 	{
 		x = 0;
 		while (x < WIDTH)
@@ -187,7 +186,7 @@ void	render_scene(t_minirt *minirt)
 		}
 		mlx_put_image_to_window(minirt->ctx, minirt->win, \
 			minirt->img.img, 0, 0);
-		y++;
+		y--;
 	}
 	printf("\rRendering: 100%%\n");
 	mlx_put_image_to_window(minirt->ctx, minirt->win, minirt->img.img, 0, 0);
