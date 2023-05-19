@@ -6,10 +6,9 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 23:06:28 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/10 09:47:25 by mdoll            ###   ########.fr       */
+/*   Updated: 2023/05/19 09:11:33 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include <math.h>
 #include "rendering.h"
@@ -60,56 +59,72 @@ t_vec3	bottom_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 	return ((t_vec3){INFINITY, INFINITY, INFINITY});
 }
 
-t_intersection	cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
+t_intersection cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 {
-	t_vec3			oc;
-	double			a;
-	double			b;
-	double			c;
-	double			discr;
-	double			t1;
-	double			t2;
-	double			temp;
-	t_vec3			point;
-	t_vec3			p1_to_p;
-	double			proj_len;
-	t_vec3			inter_top;
-	t_vec3			inter_bot;
+	t_vec3	oc;
+	double	a;
+	double	b;
+	double	c;
+	double	discriminant;
+	double	t1;
+	double	t2;
+	t_vec3	p1;
+	t_vec3	p2;
+	double	h;
+	double	proj1;
+	double	proj2;
+	t_vec3	inter_top;
+	t_vec3	inter_bot;
+	double	t;
+	t_vec3	intersection_pos;
+	t_vec3	normal;
 
 	oc = vec3_sub(pos, cylinder->pos);
 	a = vec3_dot(dir, dir) - pow(vec3_dot(dir, cylinder->axis), 2);
 	b = 2 * (vec3_dot(dir, oc) - vec3_dot(dir, cylinder->axis) * vec3_dot(oc, cylinder->axis));
 	c = vec3_dot(oc, oc) - pow(vec3_dot(oc, cylinder->axis), 2) - pow(cylinder->diameter / 2, 2);
-	discr = b * b - 4 * a * c;
-	if (discr < 0)
-		return (((t_intersection){.pos = (t_vec3){INFINITY, INFINITY, INFINITY}}));
-	t1 = (-b + sqrt(discr)) / (2 * a);
-	t2 = (-b - sqrt(discr)) / (2 * a);
-	if (t1 > t2)
-	{
-		temp = t1;
-		t1 = t2;
-		t2 = temp;
-	}
-	point = vec3_add(pos, vec3_mul(dir, t1));
-	p1_to_p = vec3_sub(point, cylinder->pos);
-	proj_len = vec3_dot(p1_to_p, cylinder->axis) + cylinder->height * 0.5;
+	discriminant = b * b - 4 * a * c;
+	if (discriminant < 0)
+		return ((t_intersection){.pos = vec3_init(INFINITY, INFINITY, INFINITY)});
+	t1 = (-b + sqrt(discriminant)) / (2 * a);
+	t2 = (-b - sqrt(discriminant)) / (2 * a);
+	p1 = vec3_add(pos, vec3_mul(dir, t1));
+	p2 = vec3_add(pos, vec3_mul(dir, t2));
+	h = cylinder->height * 0.5;
+	proj1 = vec3_dot(vec3_sub(p1, cylinder->pos), cylinder->axis);
+	proj2 = vec3_dot(vec3_sub(p2, cylinder->pos), cylinder->axis);
+	if (proj1 < -h || proj1 > h)
+		t1 = INFINITY;
+	if (proj2 < -h || proj2 > h)
+		t2 = INFINITY;
 	inter_top = top_intersect(cylinder, pos, dir);
 	inter_bot = bottom_intersect(cylinder, pos, dir);
-	if (proj_len >= 0 && proj_len <= cylinder->height)
-		return (((t_intersection){.pos = point, .normal = cylinder_normal(cylinder, point)}));
-	if ((inter_bot.x != INFINITY || inter_bot.y != INFINITY || inter_bot.z != INFINITY) && (inter_top.x != INFINITY || inter_top.y != INFINITY || inter_top.z != INFINITY))
+	if (t1 < t2)
+		t = t1;
+	else
+		t = t2;
+	if (t < 0)
 	{
-		if (vec3_mag(vec3_sub(inter_bot, pos)) < vec3_mag(vec3_sub(inter_top, pos)))
-			return ((t_intersection){.pos = inter_bot, .normal = vec3_neg(cylinder->axis)});
+		if (t1 > t2)
+			t = t1;
 		else
+			t = t2;
+	}
+	if (inter_top.x != INFINITY)
+	{
+		if (vec3_mag(vec3_sub(inter_top, pos)) < t)
 			return ((t_intersection){.pos = inter_top, .normal = cylinder->axis});
 	}
-	if (inter_top.x != INFINITY || inter_top.y != INFINITY || inter_top.z != INFINITY)
-		return ((t_intersection){.pos = inter_top, .normal = cylinder->axis});
-	if (inter_bot.x != INFINITY || inter_bot.y != INFINITY || inter_bot.z != INFINITY)
-		return ((t_intersection){.pos = inter_bot, .normal = vec3_neg(cylinder->axis)});
-	return (((t_intersection){.pos = (t_vec3){INFINITY, INFINITY, INFINITY}}));
+	if (inter_bot.x != INFINITY)
+	{
+		if (vec3_mag(vec3_sub(inter_bot, pos)) < t)
+			return ((t_intersection){.pos = inter_bot, .normal = vec3_neg(cylinder->axis)});
+	}
+	if (t < 0)
+		return ((t_intersection){.pos = vec3_init(INFINITY, INFINITY, INFINITY)});
+	intersection_pos = vec3_add(pos, vec3_mul(dir, t));
+	normal = cylinder_normal(cylinder, intersection_pos);
+	return ((t_intersection){.pos = vec3_add(pos, vec3_mul(dir, t)), .normal = normal});
 }
 
 t_vec3	cylinder_normal(t_cylinder *cyl, t_vec3 pos)
