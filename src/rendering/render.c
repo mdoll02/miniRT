@@ -39,18 +39,25 @@ t_vec3	calculate_ray_direction(t_minirt *minirt, int x, int y)
 	double	u;
 	double	v;
 	double	fov_radians;
+	t_vec3	camera_dir;
+	t_vec3	camera_right;
+	t_vec3	camera_up;
 	t_vec3	ray_dir;
-	double	ar;
+	t_vec3	transformed_dir;
 
 	u = (double)x / WIDTH;
 	v = (double)y / HEIGHT;
-	ar = (double)WIDTH / HEIGHT;
 	fov_radians = minirt->world.camera.fov * M_PI / 180.0;
+	camera_dir = vec3_normalize(minirt->world.camera.dir);
+	camera_right = vec3_normalize(vec3_cross((t_vec3){0, 1, 0}, camera_dir));
+	camera_up = vec3_cross(camera_right, camera_dir);
 	ray_dir.x = (2 * u - 1) * tan(fov_radians / 2);
-	ray_dir.y = (2 * v - 1) * tan(fov_radians / 2) / ar;
+	ray_dir.y = (1 - 2 * v) * tan(fov_radians / 2) * HEIGHT / WIDTH;
 	ray_dir.z = -1;
-	ray_dir = vec3_normalize(ray_dir);
-	return (ray_dir);
+	transformed_dir.x = vec3_dot(ray_dir, camera_right);
+	transformed_dir.y = vec3_dot(ray_dir, camera_up);
+	transformed_dir.z = vec3_dot(ray_dir, camera_dir);
+	return (vec3_normalize(transformed_dir));
 }
 
 t_intersection	find_closest_intersection(t_minirt *minirt, t_vec3 ray_start, t_object *ignore, t_vec3 ray_dir)
