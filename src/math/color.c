@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 12:52:15 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/04 21:49:57 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/19 11:08:02 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,21 @@ t_color color_scale(t_color color, double scaler)
 	return (color_limit((t_color){color.r * scaler,
 					  color.g * scaler,
 					  color.b * scaler}));
+}
+
+t_color color_waverage(t_color *cols, int size)
+{
+	t_color avg;
+	int i;
+
+	avg = (t_color){0, 0, 0};
+	i = 0;
+	while (i < size)
+	{
+		avg.r += cols[i].r;
+		avg.g += cols[i].g;
+		avg.b += cols[i].b;
+		i++;
+	}
+	return (color_scale(avg, 1.0 / size));
 }

@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 20:37:04 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/10 09:40:55 by mdoll            ###   ########.fr       */
+/*   Updated: 2023/05/19 12:53:07 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,19 @@ static void	mrt_pixel_put(t_mlx_image *img, int x, int y, t_color color)
 	dst = img->addr + ((HEIGHT - 1 - y) * img->line_length + \
 										x * (img->bbp / 8));
 	*(unsigned int *)dst = color_to_int(color);
+}
+
+static t_color mrt_pixel_get(t_mlx_image *img, int x, int y)
+{
+	t_color col;
+	int	*loc;
+
+	loc = (int *)(img->addr + ((HEIGHT - 1 - y) * img->line_length +
+									x * (img->bbp / 8)));
+	col.r = (double) ((*loc >> 16) & 0xff);
+	col.g = (double) ((*loc >> 8) & 0xff);
+	col.b = (double) (*loc & 0xff);
+	return col;
 }
 
 t_vec3	calculate_ray_direction(t_minirt *minirt, int x, int y)
@@ -107,6 +120,123 @@ int	is_illuminated(t_minirt *mrt, t_intersection isect, t_light light)
 #define MAT_REFLECTIVE .3f
 #define MAT_TRANSPARENCY .0f
 #define MAT_IOR .4f
+
+int max(int a, int b)
+{
+	if (a > b)
+		return (a);
+	return (b);
+}
+
+int min(int a, int b)
+{
+	if (a < b)
+		return (a);
+	return (b);
+}
+
+#define EDGE_THRESHOLD 20
+
+static const int gx3[3][3] = {{-1, 0, 1},
+							{-2, 0, 2},
+							{-1, 0, 1}};
+static const int gy3[3][3] = {{-1, -2, -1},
+							{0,  0,  0},
+							{1,  2,  1}};
+
+static const int gx4[4][4] = {{-2, -1, 1, 2},
+							{-3, 0, 0, 3},
+							{-3, 0, 0, 3},
+							{-2, -1, 1, 2}};
+static const int gy4[4][4] = {{-2, -3, -3, -2},
+							{-1, 0, 0, -1},
+							{1, 0, 0, 1},
+							{2, 3, 3, 2}};
+
+// fancy ai shit
+int detect_edge(t_color *cols, int size) {
+	const int *gx;
+	const int *gy;
+	t_color sumx;
+	t_color sumy;
+	int max = sqrt(size);
+	int mag;
+
+	if (max == 3) {
+		gx = (const int *)gx3;
+		gy = (const int *)gy3;
+	} else if (max == 4) {
+		gx = (const int *)gx4;
+		gy = (const int *)gy4;
+	}
+	sumx = (t_color){0, 0, 0};
+	sumy = (t_color){0, 0, 0};
+	for (int i = 0; i < max; i++) {
+		for (int j = 0; j < max; j++) {
+			sumx.r += gx[i * max + j] * cols[i * max + j].r;
+			sumy.r += gy[i * max + j] * cols[i * max + j].r;
+			sumx.g += gx[i * max + j] * cols[i * max + j].g;
+			sumy.g += gy[i * max + j] * cols[i * max + j].g;
+			sumx.b += gx[i * max + j] * cols[i * max + j].b;
+			sumy.b += gy[i * max + j] * cols[i * max + j].b;
+		}
+	}
+	mag = (int) (sqrt(sumx.r * sumx.r + sumy.r * sumy.r)
+			+ sqrt(sumx.g * sumx.g + sumy.g * sumy.g)
+			+ sqrt(sumx.b * sumx.b + sumy.b * sumy.b)) / size;
+	return (mag > EDGE_THRESHOLD);
+}
+
+#define EDGE_SIZE 4
+
+t_color get_average_color(t_mlx_image *img, int x, int y) {
+	t_color	cols[EDGE_SIZE * EDGE_SIZE];
+	int i;
+	int j;
+	int getx;
+	int gety;
+
+	i = 0;
+	while (i < EDGE_SIZE) {
+		j = 0;
+		while (j < EDGE_SIZE) {
+			getx = min(WIDTH - 1, max(0, x + j - EDGE_SIZE / 2));
+			gety = min(HEIGHT - 1, max(0, y + i - EDGE_SIZE / 2));
+			cols[i * EDGE_SIZE + j] = mrt_pixel_get(img, getx, gety);
+			j++;
+		}
+		i++;
+	}
+	//if (!detect_edge(cols, EDGE_SIZE * EDGE_SIZE))
+	//	return (t_color){255, 255, 255}; // edge detection white
+	//return (t_color){0, 0, 0}; // and edge detection black
+	if (detect_edge(cols, 9))
+		return (color_waverage(cols, 9));
+	return mrt_pixel_get(img, x, y);
+}
+
+void apply_antialiasing(t_minirt *mrt) {
+	int		x;
+	int		y;
+	t_mlx_image new;
+
+	new.img = mlx_new_image(mrt->ctx, WIDTH, HEIGHT);
+	new.addr = mlx_get_data_addr(new.img, &new.bbp,
+										&new.line_length, &new.endian);
+	y = 0;
+	while (y < HEIGHT)
+	{
+		x = 0;
+		while (x < WIDTH)
+		{
+			mrt_pixel_put(&new, x, y, get_average_color(&mrt->img, x, y));
+			x++;
+		}
+		y++;
+	}
+	mlx_destroy_image(mrt->ctx, mrt->img.img);
+	mrt->img = new;
+}
 
 t_color sample_color_at_intersection(t_minirt *mrt, t_intersection closest_isect
 									 , t_vec3 ray_dir, int depth)
@@ -188,6 +318,7 @@ void	render_scene(t_minirt *minirt)
 			minirt->img.img, 0, 0);
 		y--;
 	}
+	apply_antialiasing(minirt);
 	mlx_put_image_to_window(minirt->ctx, minirt->win, minirt->img.img, 0, 0);
 	mlx_string_put(minirt->ctx, minirt->win, 10, 20, 0xFFF, "Rendering Done!");
 }
