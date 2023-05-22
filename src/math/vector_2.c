@@ -38,7 +38,8 @@ t_vec3	vec3_refract(t_vec3 dir, t_vec3 normal, double eta)
 	k = 1.0 - eta * eta * (1.0 - cos_theta * cos_theta);
 	if (k < 0.0)
 		return (vec3_init(NAN, NAN, NAN));
-	refracted = vec3_sub(vec3_mul(dir, eta), vec3_mul(normal, eta * cos_theta + sqrtf(k)));
+	refracted = vec3_sub(vec3_mul(dir, eta), \
+					vec3_mul(normal, eta * cos_theta + sqrtf(k)));
 	return (refracted);
 }
 

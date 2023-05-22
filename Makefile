@@ -24,6 +24,7 @@ SRC := main.c \
 		math/cylinder_intersect.c \
 		math/checkerboard_sample.c \
 		math/vector_3.c \
+		math/cylinder_helpers.c \
 
 SRC_DIR := src
 OBJ_DIR := obj

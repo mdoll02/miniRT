@@ -46,6 +46,15 @@ typedef struct s_color
 	double	b;
 }	t_color;
 
+typedef struct s_isec_values
+{
+	double	a;
+	double	b;
+	double	c;
+	double	discr;
+	t_vec3	oc;
+}		t_isec_values;
+
 struct				s_object;
 
 typedef struct s_intersection
