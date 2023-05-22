@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 09:59:30 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/08 10:45:09 by mdoll            ###   ########.fr       */
+/*   Updated: 2023/05/22 12:44:05 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 # define WIDTH 1280
 # define HEIGHT 720
 
-typedef void*		t_mlx_context;
-typedef void*		t_mlx_window;
-typedef void*		t_mlx_image_ptr;
+typedef void*			t_mlx_context;
+typedef void*			t_mlx_window;
+typedef void*			t_mlx_image_ptr;
 
 typedef struct s_mlx_image
 {
@@ -55,7 +55,7 @@ typedef struct s_isec_values
 	t_vec3	oc;
 }		t_isec_values;
 
-struct				s_object;
+struct					s_object;
 
 typedef struct s_intersection
 {
@@ -65,11 +65,10 @@ typedef struct s_intersection
 	t_vec3			normal;
 }	t_intersection;
 
-typedef	t_intersection(	*t_f_check_intersect)(struct s_object* obj,
-														t_vec3 pos,
-														t_vec3 dir);
-typedef t_color(	*t_f_sample_color)(struct s_object* obj, t_vec3 pos);
-typedef t_vec3(		*t_f_get_normal)(struct s_object* obj, t_vec3 pos);
+typedef t_color(		*t_f_sample_color)(struct s_object* obj, t_vec3 pos);
+typedef t_vec3(			*t_f_get_normal)(struct s_object* obj, t_vec3 pos);
+typedef t_intersection(	*t_f_check_intersect)(struct s_object* obj, \
+											t_vec3 pos, t_vec3 dir);
 
 typedef struct s_object
 {
@@ -154,7 +153,5 @@ typedef struct s_lexed_line
 	double	*values;
 	int		nb_of_values;
 }	t_lexed_line;
-
-
 
 #endif //DEFINITIONS_H

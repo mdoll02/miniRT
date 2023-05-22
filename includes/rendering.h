@@ -6,7 +6,7 @@
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 20:39:12 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/05/10 09:33:26 by mdoll            ###   ########.fr       */
+/*   Updated: 2023/05/22 12:42:04 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ t_color			plane_sample_color(t_plane *plane, t_vec3 pos);
 t_vec3			cylinder_normal(t_cylinder *cyl, t_vec3 pos);
 t_color			cylinder_sample_color(t_cylinder *cyl, t_vec3 pos);
 t_color			checkerboard_color(t_object *obj, t_vec3 pos);
-t_intersection	cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir);
+t_intersection	cylinder_intersect(t_cylinder *cylinder, t_vec3 pos, \
+													t_vec3 dir);
 t_vec3			cylinder_cap_intersect(t_cylinder *cylinder, t_vec3 pos, \
 													t_vec3 dir, bool is_top);
 double			cylinder_side_intersect(t_cylinder *cylinder, t_vec3 pos, \
