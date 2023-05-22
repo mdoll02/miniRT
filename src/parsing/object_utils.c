@@ -6,7 +6,7 @@
 /*   By: mdoll <mdoll@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 09:57:28 by mdoll             #+#    #+#             */
-/*   Updated: 2023/05/04 12:43:39 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/22 13:22:01 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,30 +16,39 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef const struct {
+typedef const struct s_func_pair{
 	char	*name;
 	void	*func;
 }	t_func_pair;
 
-static t_func_pair s_intersect_funcs[] = {
-		{"sp", (t_f_check_intersect) & sphere_intersect},
-		{"pl", (t_f_check_intersect) & plane_intersect},
-		{"cy", (t_f_check_intersect) & cylinder_intersect},
-		{0, 0}
+static const struct{
+	char	*name;
+	void	*func;
+}s_intersect_funcs[] = {
+{"sp", (t_f_check_intersect) & sphere_intersect},
+{"pl", (t_f_check_intersect) & plane_intersect},
+{"cy", (t_f_check_intersect) & cylinder_intersect},
+{0, 0}
 };
 
-static t_func_pair s_normal_funcs[] = {
-		{"sp", (t_f_get_normal) & sphere_normal},
-		{"pl", (t_f_get_normal) & plane_normal},
-		{"cy", (t_f_get_normal) & cylinder_normal},
-		{0, 0}
+static const struct{
+	char	*name;
+	void	*func;
+}s_normal_funcs[] = {
+{"sp", (t_f_get_normal) & sphere_normal},
+{"pl", (t_f_get_normal) & plane_normal},
+{"cy", (t_f_get_normal) & cylinder_normal},
+{0, 0}
 };
 
-static t_func_pair s_sample_funcs[] = {
-		{"sp", (t_f_sample_color) & sphere_sample_color},
-		{"pl", (t_f_sample_color) & plane_sample_color},
-		{"cy", (t_f_sample_color) & cylinder_sample_color},
-		{0, 0}
+static const struct{
+	char	*name;
+	void	*func;
+}s_sample_funcs[] = {
+{"sp", (t_f_sample_color) & sphere_sample_color},
+{"pl", (t_f_sample_color) & plane_sample_color},
+{"cy", (t_f_sample_color) & cylinder_sample_color},
+{0, 0}
 };
 
 void	append_object(t_object **objects, t_object *new_obj)
@@ -82,21 +91,29 @@ int	add_object(t_lexed_line *lex, t_object **objects)
 	return (0);
 }
 
-void* get_function_by_name(const t_func_pair *pairs, const char *name)
+void	*get_function_by_name(const t_func_pair *pairs, const char *name)
 {
-	for (int i = 0; pairs[i].name; i++)
+	int	i;
+
+	i = 0;
+	while (pairs[i].name)
+	{
 		if (!ft_strcmp(pairs[i].name, name))
-			return pairs[i].func;
-	return 0;
+			return (pairs[i].func);
+		i++;
+	}
+	return (0);
 }
 
-void set_support_functions(const char *type, t_object *obj)
+void	set_support_functions(const char *type, t_object *obj)
 {
-	obj->f_intersect = get_function_by_name(s_intersect_funcs, type);
-	obj->f_get_normal = get_function_by_name(s_normal_funcs, type);
-	obj->f_sample_color = get_function_by_name(s_sample_funcs, type);
+	obj->f_intersect = get_function_by_name((t_func_pair *)s_intersect_funcs,
+			type);
+	obj->f_get_normal = get_function_by_name((t_func_pair *)s_normal_funcs,
+			type);
+	obj->f_sample_color = get_function_by_name((t_func_pair *)s_sample_funcs,
+			type);
 }
-
 
 int	allocate_flt_array(double **num_arr, char *line)
 {
