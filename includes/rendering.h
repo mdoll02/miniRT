@@ -51,4 +51,39 @@ t_color			get_transparency(t_vec3 ray_dir, t_minirt *mrt,
 					t_intersection closest_isect, int depth);
 t_vec3			calculate_ray_direction(t_minirt *minirt, int x, int y);
 
+typedef const struct s_func_pair{
+	char	*name;
+	void	*func;
+}	t_func_pair;
+
+static const struct{
+	char	*name;
+	void	*func;
+}s_intersect_funcs[] = {
+		{"sp", (t_f_check_intersect) & sphere_intersect},
+		{"pl", (t_f_check_intersect) & plane_intersect},
+		{"cy", (t_f_check_intersect) & cylinder_intersect},
+		{0, 0}
+};
+
+static const struct{
+	char	*name;
+	void	*func;
+}s_normal_funcs[] = {
+		{"sp", (t_f_get_normal) & sphere_normal},
+		{"pl", (t_f_get_normal) & plane_normal},
+		{"cy", (t_f_get_normal) & cylinder_normal},
+		{0, 0}
+};
+
+static const struct{
+	char	*name;
+	void	*func;
+}s_sample_funcs[] = {
+		{"sp", (t_f_sample_color) & sphere_sample_color},
+		{"pl", (t_f_sample_color) & plane_sample_color},
+		{"cy", (t_f_sample_color) & cylinder_sample_color},
+		{0, 0}
+};
+
 #endif //RENDERING_H

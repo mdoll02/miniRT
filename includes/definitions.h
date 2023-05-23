@@ -167,4 +167,16 @@ typedef struct s_coordinates
 	int	y;
 }	t_coordinates;
 
+typedef struct s_distance
+{
+	double	t1;
+	double	t2;
+}	t_distance;
+
+typedef struct s_proj_len
+{
+	double	proj1;
+	double	proj2;
+}	t_proj_len;
+
 #endif //DEFINITIONS_H

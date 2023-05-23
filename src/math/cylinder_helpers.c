@@ -15,18 +15,6 @@
 #include "rendering.h"
 #include "vec_math.h"
 
-typedef struct s_distance
-{
-	double	t1;
-	double	t2;
-}	t_distance;
-
-typedef struct s_proj_len
-{
-	double	proj1;
-	double	proj2;
-}	t_proj_len;
-
 t_vec3	cylinder_cap_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir, \
 														bool is_top)
 {
