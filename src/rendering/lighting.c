@@ -47,7 +47,7 @@ double	specular_lighting(t_minirt *mrt, t_intersection closest_isect,
 				closest_isect.pos));
 	halfway_dir = vec3_normalize(vec3_add(light_dir, view_dir));
 	specular = pow(fmax(vec3_dot(closest_isect.normal, halfway_dir), 0.0),
-			MAT_REFLECTIVE * 3);
+			32);
 	return (specular);
 }
 
@@ -88,5 +88,3 @@ t_color	get_transparency(t_vec3 ray_dir, t_minirt *mrt,
 	}
 	return ((t_color){0, 0, 0});
 }
-
-// TODO: change specular to 32

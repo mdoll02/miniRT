@@ -16,8 +16,8 @@
 # include <stdbool.h>
 # include "definitions.h"
 
-# define MAX_DEPTH 1
-# define MAT_REFLECTIVE .0f
+# define MAX_DEPTH 5
+# define MAT_REFLECTIVE .3f
 # define MAT_TRANSPARENCY .0f
 # define MAT_IOR .4f
 
