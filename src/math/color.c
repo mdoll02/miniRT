@@ -31,3 +31,10 @@ t_color	color_scale(t_color color, double scaler)
 						color.g * scaler, \
 						color.b * scaler}));
 }
+
+unsigned int	color_to_int(t_color color)
+{
+	return (((int)color.r & 0xff) << 16
+		| ((int)color.g & 0xff) << 8
+		| ((int)color.b & 0xff));
+}

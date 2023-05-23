@@ -15,8 +15,9 @@
 
 # include "definitions.h"
 
-t_color	color_limit(t_color color);
-t_color	color_add(t_color a, t_color b);
-t_color	color_scale(t_color color, double scalar);
+t_color			color_limit(t_color color);
+t_color			color_add(t_color a, t_color b);
+t_color			color_scale(t_color color, double scalar);
+unsigned int	color_to_int(t_color color);
 
 #endif //MINIRT_COLOR_MATH_H

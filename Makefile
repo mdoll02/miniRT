@@ -15,7 +15,6 @@ SRC := main.c \
 		parsing/ft_atof.c \
 		parsing/error_handling_utils.c \
 		parsing/set_utils.c \
-		rendering/render.c \
 		math/vector.c \
 		math/vector_2.c \
 		math/color.c \
@@ -25,6 +24,9 @@ SRC := main.c \
 		math/checkerboard_sample.c \
 		math/vector_3.c \
 		math/cylinder_helpers.c \
+		rendering/render.c \
+		rendering/lighting.c \
+		rendering/calculate_rays.c \
 
 SRC_DIR := src
 OBJ_DIR := obj

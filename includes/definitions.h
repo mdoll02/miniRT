@@ -154,4 +154,17 @@ typedef struct s_lexed_line
 	int		nb_of_values;
 }	t_lexed_line;
 
+typedef struct s_camera_vectors
+{
+	t_vec3	camera_dir;
+	t_vec3	camera_right;
+	t_vec3	camera_up;
+}	t_camera_vectors;
+
+typedef struct s_coordinates
+{
+	int	x;
+	int	y;
+}	t_coordinates;
+
 #endif //DEFINITIONS_H
