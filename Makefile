@@ -45,7 +45,7 @@ $(NAME): $(OBJ)
 	@make -C ext/libft
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(MLX) $(LIBS) ext/libft/libft.a
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c includes/
 	@mkdir -p $(OBJ_DIR)
 	@mkdir -p $(OBJ_DIR)/hooks
 	@mkdir -p $(OBJ_DIR)/parsing
