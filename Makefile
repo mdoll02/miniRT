@@ -27,6 +27,7 @@ SRC := main.c \
 		rendering/render.c \
 		rendering/lighting.c \
 		rendering/calculate_rays.c \
+		rendering/calculate_intersection.c \
 
 SRC_DIR := src
 OBJ_DIR := obj
