@@ -62,7 +62,7 @@ static t_distance	get_distance(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 	return (dist);
 }
 
-static t_proj_len	get_projection_lenght(t_cylinder *cylinder, t_vec3 pos, \
+static t_proj_len	get_projection_length(t_cylinder *cylinder, t_vec3 pos, \
 												t_vec3 dir, t_distance dist)
 {
 	t_vec3			p1;
@@ -87,7 +87,7 @@ double	cylinder_side_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 	if (isnan(dist.t1) || isnan(dist.t2))
 		return (NAN);
 	h = cylinder->height * 0.5;
-	proj_len = get_projection_lenght(cylinder, pos, dir, dist);
+	proj_len = get_projection_length(cylinder, pos, dir, dist);
 	if (proj_len.proj1 < -h || proj_len.proj1 > h)
 		dist.t1 = INFINITY;
 	if (proj_len.proj2 < -h || proj_len.proj2 > h)
