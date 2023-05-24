@@ -69,7 +69,7 @@ t_color	sample_color_at_intersection(t_minirt *mrt, t_intersection c_isect
 	if (MAT_REFLECTIVE > 0 && illuminated)
 		diffuse += specular_lighting(mrt, c_isect, light_dir);
 	if (illuminated)
-		return (color_add(color, color_scale(object_color, diffuse)));
+		return (color_scale(color_add(color, color_scale(object_color, diffuse)), mrt->world.light.brightness));
 	return (color_add(color, color_scale(object_color, \
 						mrt->world.ambient.brightness)));
 }
