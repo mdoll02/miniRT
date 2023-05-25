@@ -6,7 +6,7 @@
 /*   By: mdoll <mdoll@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 11:25:35 by mdoll             #+#    #+#             */
-/*   Updated: 2023/05/22 11:25:35 by mdoll            ###   ########.fr       */
+/*   Updated: 2023/05/25 09:49:24 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,18 @@ static t_distance	get_distance(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 {
 	t_isec_values	iv;
 	t_distance		dist;
+	double			radius;
+	t_vec3			normal;
 
+	radius = (double)cylinder->diameter / 2;
+	normal = vec3_normalize(cylinder->axis);
 	iv.oc = vec3_sub(pos, cylinder->pos);
-	iv.a = vec3_dot(dir, dir) - pow(vec3_dot(dir, cylinder->axis), 2);
-	iv.b = 2 * (vec3_dot(dir, iv.oc) - vec3_dot(dir, cylinder->axis) * \
-											vec3_dot(iv.oc, cylinder->axis));
-	iv.c = vec3_dot(iv.oc, iv.oc) - pow(vec3_dot(iv.oc, cylinder->axis), 2) \
-											- pow(cylinder->diameter / 2, 2);
-	iv.discr = iv.b * iv.b - 4 * iv.a * iv.c;
+	iv.a = vec3_dot(dir, dir) - pow(vec3_dot(dir, normal), 2);
+	iv.b = 2 * (vec3_dot(dir, iv.oc) - vec3_dot(dir, normal) * \
+		vec3_dot(iv.oc, normal));
+	iv.c = vec3_dot(iv.oc, iv.oc) - pow(vec3_dot(iv.oc, normal), 2) \
+		- pow(radius, 2);
+	iv.discr = pow(iv.b, 2) - 4 * iv.a * iv.c;
 	if (iv.discr < 0)
 		return ((t_distance){NAN, NAN});
 	dist.t1 = (-iv.b + sqrt(iv.discr)) / (2 * iv.a);
