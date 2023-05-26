@@ -64,12 +64,12 @@ t_color	sample_color_at_intersection(t_minirt *mrt, t_intersection c_isect
 					c_isect, depth));
 	illuminated = is_illuminated(mrt, c_isect, mrt->world.light);
 	light_dir = vec3_normalize(vec3_sub(mrt->world.light.pos, c_isect.pos));
-	diffuse = vec3_dot(c_isect.normal, light_dir);
-	diffuse = fmax(diffuse, 0.0f);
+	diffuse = fmax(vec3_dot(c_isect.normal, light_dir), 0.0f);
 	if (MAT_REFLECTIVE > 0 && illuminated)
 		diffuse += specular_lighting(mrt, c_isect, light_dir);
 	if (illuminated)
-		return (color_scale(color_add(color, color_scale(object_color, diffuse)), mrt->world.light.brightness));
+		return (color_scale(color_add(color, color_scale(object_color, \
+									diffuse)), mrt->world.light.brightness));
 	return (color_add(color, color_scale(object_color, \
 						mrt->world.ambient.brightness)));
 }
