@@ -26,12 +26,17 @@ t_vec3	cylinder_cap_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir, \
 
 	normal = vec3_normalize(cylinder->axis);
 	if (is_top)
+	{
 		cap.pos = vec3_add(cylinder->pos, vec3_mul(normal, \
 			cylinder->height * 0.5));
+		cap.normal = cylinder->axis;
+	}
 	else
+	{
 		cap.pos = vec3_sub(cylinder->pos, vec3_mul(normal, \
 			cylinder->height * 0.5));
-	cap.normal = normal;
+		cap.normal = vec3_neg(cylinder->axis);
+	}
 	inter = plane_intersect(&cap, pos, dir);
 	inter_cap = inter.pos;
 	if (isnan(inter_cap.x) || isnan(inter_cap.y) || isnan(inter_cap.z))
