@@ -30,10 +30,12 @@ t_intersection	cylinder_intersect(t_cylinder *cyl, t_vec3 pos, t_vec3 dir)
 	i_bot = cylinder_cap_intersect(cyl, pos, dir, false);
 	if ((i_top.x != INFINITY || i_top.y != INFINITY || i_top.z != INFINITY) \
 							&& (vec3_mag(vec3_sub(i_top, pos)) < t))
-		return ((t_intersection){.pos = i_top, .normal = vec3_normalize(cyl->axis)});
+		return ((t_intersection){.pos = i_top, .normal = \
+													vec3_normalize(cyl->axis)});
 	if ((i_bot.x != INFINITY || i_bot.y != INFINITY || i_bot.z != INFINITY) \
 							&& vec3_mag(vec3_sub(i_bot, pos)) < t)
-		return ((t_intersection){.pos = i_bot, .normal = vec3_normalize(vec3_neg(cyl->axis))});
+		return ((t_intersection){.pos = i_bot, .normal = vec3_normalize(\
+												vec3_neg(cyl->axis))});
 	if (t < 0)
 		return ((t_intersection){.pos = \
 									vec3_init(INFINITY, INFINITY, INFINITY)});

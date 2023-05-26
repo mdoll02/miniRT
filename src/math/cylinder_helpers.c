@@ -19,7 +19,6 @@ t_vec3	cylinder_cap_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir, \
 														bool is_top)
 {
 	t_plane			cap;
-	t_vec3			inter_cap;
 	t_vec3			p1_to_cap;
 	t_intersection	inter;
 	t_vec3			normal;
@@ -38,15 +37,11 @@ t_vec3	cylinder_cap_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir, \
 		cap.normal = vec3_neg(cylinder->axis);
 	}
 	inter = plane_intersect(&cap, pos, dir);
-	inter_cap = inter.pos;
-	if (isnan(inter_cap.x) || isnan(inter_cap.y) || isnan(inter_cap.z))
+	if (isnan(inter.pos.x) || isnan(inter.pos.y) || isnan(inter.pos.z))
 		return ((t_vec3){INFINITY, INFINITY, INFINITY});
-	else
-	{
-		p1_to_cap = vec3_sub(inter_cap, cap.pos);
-		if (vec3_mag(p1_to_cap) < cylinder->diameter / 2)
-			return (inter_cap);
-	}
+	p1_to_cap = vec3_sub(inter.pos, cap.pos);
+	if (vec3_mag(p1_to_cap) < cylinder->diameter / 2)
+		return (inter.pos);
 	return ((t_vec3){INFINITY, INFINITY, INFINITY});
 }
 
