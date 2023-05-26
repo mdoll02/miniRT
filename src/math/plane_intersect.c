@@ -20,21 +20,23 @@ t_intersection	plane_intersect(t_plane *plane, t_vec3 pos, t_vec3 dir)
 	double			denom;
 	double			t;
 	t_intersection	intersection;
+	t_vec3			normal;
 
-	denom = vec3_dot(plane->normal, dir);
+	normal = vec3_normalize(plane->normal);
+	denom = vec3_dot(normal, dir);
 	if (fabs(denom) < DBL_EPSILON)
 	{
 		intersection.pos = vec3_init(NAN, NAN, NAN);
 		return (intersection);
 	}
-	t = vec3_dot(vec3_sub(plane->pos, pos), plane->normal) / denom;
+	t = vec3_dot(vec3_sub(plane->pos, pos), normal) / denom;
 	if (t < 0)
 	{
 		intersection.pos = vec3_init(NAN, NAN, NAN);
 		return (intersection);
 	}
 	intersection.pos = vec3_add(pos, vec3_mul(dir, t));
-	intersection.normal = plane->normal;
+	intersection.normal = vec3_normalize(plane->normal);
 	return (intersection);
 }
 
