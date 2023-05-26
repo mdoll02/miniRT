@@ -22,14 +22,16 @@ t_vec3	cylinder_cap_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir, \
 	t_vec3			inter_cap;
 	t_vec3			p1_to_cap;
 	t_intersection	inter;
+	t_vec3			normal;
 
+	normal = vec3_normalize(cylinder->axis);
 	if (is_top)
-		cap.pos = vec3_add(cylinder->pos, vec3_mul(cylinder->axis, \
+		cap.pos = vec3_add(cylinder->pos, vec3_mul(normal, \
 			cylinder->height * 0.5));
 	else
-		cap.pos = vec3_sub(cylinder->pos, vec3_mul(cylinder->axis, \
+		cap.pos = vec3_sub(cylinder->pos, vec3_mul(normal, \
 			cylinder->height * 0.5));
-	cap.normal = cylinder->axis;
+	cap.normal = normal;
 	inter = plane_intersect(&cap, pos, dir);
 	inter_cap = inter.pos;
 	if (isnan(inter_cap.x) || isnan(inter_cap.y) || isnan(inter_cap.z))
@@ -72,11 +74,13 @@ static t_proj_len	get_projection_length(t_cylinder *cylinder, t_vec3 pos, \
 	t_vec3			p1;
 	t_vec3			p2;
 	t_proj_len		proj_len;
+	t_vec3			normal;
 
+	normal = vec3_normalize(cylinder->axis);
 	p1 = vec3_add(pos, vec3_mul(dir, dist.t1));
 	p2 = vec3_add(pos, vec3_mul(dir, dist.t2));
-	proj_len.proj1 = vec3_dot(vec3_sub(p1, cylinder->pos), cylinder->axis);
-	proj_len.proj2 = vec3_dot(vec3_sub(p2, cylinder->pos), cylinder->axis);
+	proj_len.proj1 = vec3_dot(vec3_sub(p1, cylinder->pos), normal);
+	proj_len.proj2 = vec3_dot(vec3_sub(p2, cylinder->pos), normal);
 	return (proj_len);
 }
 
