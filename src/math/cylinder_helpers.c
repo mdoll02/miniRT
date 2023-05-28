@@ -6,7 +6,7 @@
 /*   By: mdoll <mdoll@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 11:25:35 by mdoll             #+#    #+#             */
-/*   Updated: 2023/05/28 16:51:05 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/28 17:33:56 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,9 @@ static t_distance	get_distance(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 	iv.discr = (iv.b * iv.b) - 4 * iv.a * iv.c;
 	if (iv.discr < 0)
 		return ((t_distance){NAN, NAN});
-	dist.t1 = (-iv.b + sqrt(iv.discr)) / (2 * iv.a);
-	dist.t2 = (-iv.b - sqrt(iv.discr)) / (2 * iv.a);
+	double discrsqrt = sqrt(iv.discr);
+	dist.t1 = (-iv.b + discrsqrt) / (2 * iv.a);
+	dist.t2 = (-iv.b - discrsqrt) / (2 * iv.a);
 	return (dist);
 }
 
