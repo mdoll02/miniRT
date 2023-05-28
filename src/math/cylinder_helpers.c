@@ -6,7 +6,7 @@
 /*   By: mdoll <mdoll@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 11:25:35 by mdoll             #+#    #+#             */
-/*   Updated: 2023/05/28 17:33:56 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/28 17:36:18 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ t_vec3	cylinder_cap_intersect(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir, \
 	return ((t_vec3){INFINITY, INFINITY, INFINITY});
 }
 
-static t_distance	get_distance(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
+inline static t_distance	get_distance(t_cylinder *cylinder,
+	t_vec3 pos, t_vec3 dir)
 {
 	t_isec_values	iv;
 	t_distance		dist;
@@ -71,8 +72,8 @@ static t_distance	get_distance(t_cylinder *cylinder, t_vec3 pos, t_vec3 dir)
 	return (dist);
 }
 
-static t_proj_len	get_projection_length(t_cylinder *cylinder, t_vec3 pos, \
-												t_vec3 dir, t_distance dist)
+inline static t_proj_len	get_projection_length(t_cylinder *cylinder,
+		t_vec3 pos, t_vec3 dir, t_distance dist)
 {
 	t_vec3			p1;
 	t_vec3			p2;
