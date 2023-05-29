@@ -6,7 +6,7 @@
 /*   By: mdoll <mdoll@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 14:00:13 by mdoll             #+#    #+#             */
-/*   Updated: 2023/05/29 10:27:37 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/29 10:46:57 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,8 @@ t_color	get_reflection(t_vec3 ray_dir, t_minirt *mrt,
 				refl_dir, depth + 1);
 		return (color_scale(refl_color, MAT_REFLECTIVE));
 	}
-	return (mrt->world.ambient.color);
+	return (color_scale(mrt->world.ambient.color,
+			mrt->world.ambient.brightness));
 }
 
 t_color	get_transparency(t_vec3 ray_dir, t_minirt *mrt,
@@ -86,5 +87,5 @@ t_color	get_transparency(t_vec3 ray_dir, t_minirt *mrt,
 				refr_dir, depth + 1);
 		return (color_scale(refr_color, MAT_TRANSPARENCY));
 	}
-	return (mrt->world.ambient.color);
+	return (color_scale(mrt->world.ambient.color, MAT_TRANSPARENCY));
 }
