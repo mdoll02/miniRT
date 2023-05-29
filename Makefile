@@ -2,7 +2,7 @@ NAME := miniRT
 
 CC := gcc
 
-CFLAGS := -Wall -Wextra -Werror -g
+CFLAGS := -Wall -Wextra -Werror -std=c17 -g
 # CFLAGS := $(CFLAGS) -fsanitize=address
 
 SRC := main.c \
