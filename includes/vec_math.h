@@ -15,7 +15,9 @@
 
 # include "definitions.h"
 
-# define M_PI 3.14159265358979323846
+# ifndef M_PI
+#  define M_PI 3.14159265358979323846
+# endif
 
 t_vec3	vec3_init(double x, double y, double z);
 t_vec3	vec3_add(t_vec3 a, t_vec3 b);
