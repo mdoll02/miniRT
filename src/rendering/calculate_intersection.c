@@ -6,11 +6,12 @@
 /*   By: mdoll <mdoll@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 14:15:25 by mdoll             #+#    #+#             */
-/*   Updated: 2023/05/23 14:15:28 by mdoll            ###   ########.fr       */
+/*   Updated: 2023/05/28 18:09:43 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <math.h>
+#include <float.h>
 #include "rendering.h"
 #include "vec_math.h"
 #include "color_math.h"
@@ -36,7 +37,8 @@ t_intersection	find_closest_intersection(t_minirt *minirt, t_vec3 ray_start,
 		if (!isnan(isect.pos.x) && !isnan(isect.pos.y) && !isnan(isect.pos.z))
 		{
 			isect.t = vec3_mag(vec3_sub(isect.pos, ray_start));
-			if (isect.t < closest_isect.t && isfinite(isect.t))
+			if (isect.t < closest_isect.t && isfinite(isect.t)
+				&& isect.t > FLT_EPSILON * 2)
 				closest_isect = isect;
 		}
 		obj = obj->next;
