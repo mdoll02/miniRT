@@ -49,7 +49,7 @@ t_color			get_reflection(t_vec3 ray_dir, t_minirt *mrt,
 					t_intersection closest_isect, int depth);
 t_color			get_transparency(t_vec3 ray_dir, t_minirt *mrt,
 					t_intersection closest_isect, int depth);
-t_vec3			calculate_ray_direction(t_minirt *minirt, int x, int y);
+t_vec3			calculate_ray_direction(t_minirt *mrt, int x, int y);
 
 typedef const struct s_func_pair{
 	char	*name;
