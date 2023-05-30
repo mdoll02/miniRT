@@ -6,7 +6,7 @@
 /*   By: mdoll <mdoll@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 14:15:25 by mdoll             #+#    #+#             */
-/*   Updated: 2023/05/28 18:09:43 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/05/30 13:40:54 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ t_color	sample_color_at_intersection(t_minirt *mrt, t_intersection c_isect
 	int				illuminated;
 	t_vec3			light_dir;
 	double			diffuse;
+	double			ambient;
 
 	color = (t_color){0, 0, 0};
 	if (depth >= MAX_DEPTH)
@@ -69,9 +70,13 @@ t_color	sample_color_at_intersection(t_minirt *mrt, t_intersection c_isect
 	diffuse = fmax(vec3_dot(c_isect.normal, light_dir), 0.0f);
 	if (MAT_REFLECTIVE > 0 && illuminated)
 		diffuse += specular_lighting(mrt, c_isect, light_dir);
-	if (illuminated)
-		return (color_scale(color_add(color, color_scale(object_color, \
-									diffuse)), mrt->world.light.brightness));
-	return (color_add(color, color_scale(object_color, \
-						mrt->world.ambient.brightness)));
+	if (!illuminated)
+		diffuse = 0;
+	diffuse *= mrt->world.light.brightness;
+	ambient = mrt->world.ambient.brightness;
+	ambient = fmax(0, fmin(ambient, 1.0f));
+	color = color_add(color, color_scale(object_color, diffuse));
+	color = color_add(color, color_scale(object_color, ambient));
+	//color = color_add(color, color_scale(mrt->world.ambient.color, mrt->world.ambient.brightness));
+	return (color);
 }
