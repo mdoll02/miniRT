@@ -32,7 +32,8 @@ int	main(int argc, char **argv)
 		error_and_exit("Wrong number of arguments");
 	ft_bzero(&minirt, sizeof(t_minirt));
 	if (parse_rt_file(argv[1], &minirt.world))
-		error_and_exit("Failed to parse file");
+		exit(1);
+	printf("Parsed file successfully\n");
 	minirt.ctx = mlx_init();
 	minirt.win = mlx_new_window(minirt.ctx, WIDTH, HEIGHT, "Pain");
 	minirt.img.img = mlx_new_image(minirt.ctx, WIDTH, HEIGHT);
