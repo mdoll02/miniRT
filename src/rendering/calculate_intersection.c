@@ -6,7 +6,7 @@
 /*   By: mdoll <mdoll@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 14:15:25 by mdoll             #+#    #+#             */
-/*   Updated: 2023/06/01 21:42:25 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/06/01 21:55:41 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ t_color	sample_color_at_intersection(t_minirt *mrt, t_intersection c_isect
 					c_isect, depth));
 	illuminated = is_illuminated(mrt, c_isect, mrt->world.light);
 	light_dir = vec3_normalize(vec3_sub(mrt->world.light.pos, c_isect.pos));
-	diffuse = 1 - vec3_mag(vec3_mul(vec3_sub(mrt->world.light.pos, c_isect.pos), 0.002));
+	diffuse = 1 - vec3_mag(vec3_mul(vec3_sub(mrt->world.light.pos, c_isect.pos), 0.0035));
 	if (MAT_REFLECTIVE > 0 && illuminated)
 		diffuse += specular_lighting(mrt, c_isect, light_dir);
 	if (!illuminated)
