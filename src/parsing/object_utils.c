@@ -43,14 +43,14 @@ int	add_object(t_lexed_line *lex, t_object **objects)
 		&& ft_strcmp(lex->obj_name, "cy"))
 	{
 		printf("Error\nUnknown object %s\n", lex->obj_name);
-		return (free(obj), 1);
+		return (free(obj), free(lex->obj_name), free(lex->values), 1);
 	}
 	if ((!ft_strcmp(lex->obj_name, "sp") && lex->nb_of_values != 7)
 		|| (!ft_strcmp(lex->obj_name, "pl") && lex->nb_of_values != 9)
 		|| (!ft_strcmp(lex->obj_name, "cy") && lex->nb_of_values != 11))
 	{
 		printf("Error\nWrong number of arguments for %s\n", lex->obj_name);
-		return (free(obj), 1);
+		return (free(obj), free(lex->obj_name), free(lex->values), 1);
 	}
 	set_support_functions(lex->obj_name, (t_object *)obj);
 	ft_memcpy(((char *)obj) + sizeof(t_object), lex->values, \
