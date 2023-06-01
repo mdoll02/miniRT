@@ -24,6 +24,7 @@ static void	clean_objects(t_object *obj)
 		obj = obj->next;
 		free(tmp);
 	}
+	free(obj);
 }
 
 int	close_hook(t_minirt *minirt)
