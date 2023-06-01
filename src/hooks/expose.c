@@ -1,25 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hooks.h                                            :+:      :+:    :+:   */
+/*   expose.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kschmidt <kevin@imkx.dev>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/02 10:46:59 by kschmidt          #+#    #+#             */
-/*   Updated: 2023/06/01 22:21:38 by kschmidt         ###   ########.fr       */
+/*   Created: 2023/06/01 22:21:46 by kschmidt          #+#    #+#             */
+/*   Updated: 2023/06/01 22:24:26 by kschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HOOKS_H
-# define HOOKS_H
+#include "hooks.h"
+#include "mlx/mlx.h"
 
-# include "definitions.h"
-
-void	register_hooks(t_minirt *minirt);
-
-int		loop_hook(t_minirt *minirt);
-int		expose_hook(t_minirt *minirt);
-int		key_hook(int keycode, t_minirt *minirt);
-int		close_hook(t_minirt *minirt);
-
-#endif //HOOKS_H
+int	expose_hook(t_minirt *minirt)
+{
+	mlx_put_image_to_window(minirt->ctx, minirt->win, minirt->img.img, 0, 0);
+	return (0);
+}

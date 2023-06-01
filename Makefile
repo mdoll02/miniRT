@@ -7,6 +7,7 @@ CFLAGS := -Wall -Wextra -Werror -std=c17 -g
 
 SRC := main.c \
 		hooks/hooks.c \
+		hooks/expose.c \
 		hooks/close.c \
 		hooks/keys.c \
 		parsing/rt_parser.c \
