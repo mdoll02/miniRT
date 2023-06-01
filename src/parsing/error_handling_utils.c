@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 
 #include "parsing.h"
-#include <stdio.h>
 #include "libft.h"
+#include <stdio.h>
 
 int	check_file_ending(char const *file)
 {
@@ -21,9 +21,14 @@ int	check_file_ending(char const *file)
 	i = 0;
 	while (file[i])
 		i++;
+	if (i < 4)
+	{
+		printf("Error\nFile name too short\n");
+		return (1);
+	}
 	if (file[i - 1] != 't' || file[i - 2] != 'r' || file[i - 3] != '.')
 	{
-		printf("Wrong file ending\n");
+		printf("Error\nWrong file ending\n");
 		return (1);
 	}
 	return (0);

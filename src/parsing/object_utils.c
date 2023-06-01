@@ -39,14 +39,18 @@ int	add_object(t_lexed_line *lex, t_object **objects)
 	obj = malloc(sizeof(t_any_object));
 	if (!obj)
 		return (1);
+	if (ft_strcmp(lex->obj_name, "sp") && ft_strcmp(lex->obj_name, "pl") \
+		&& ft_strcmp(lex->obj_name, "cy"))
+	{
+		printf("Error\nUnknown object %s\n", lex->obj_name);
+		return (free(obj), 1);
+	}
 	if ((!ft_strcmp(lex->obj_name, "sp") && lex->nb_of_values != 7)
 		|| (!ft_strcmp(lex->obj_name, "pl") && lex->nb_of_values != 9)
 		|| (!ft_strcmp(lex->obj_name, "cy") && lex->nb_of_values != 11))
 	{
-		printf("Error: Wrong number of arguments for object %s\n", \
-			lex->obj_name);
-		free(obj);
-		return (1);
+		printf("Error\nWrong number of arguments for %s\n", lex->obj_name);
+		return (free(obj), 1);
 	}
 	set_support_functions(lex->obj_name, (t_object *)obj);
 	ft_memcpy(((char *)obj) + sizeof(t_object), lex->values, \
@@ -90,7 +94,7 @@ int	allocate_flt_array(double **num_arr, char *line)
 		line = skip_spaces(line);
 		while ((ft_isdigit(*line) || *line == '.' || *line == '-') && *line)
 			line++;
-		if (*line == '/')
+		if (*line == '/' || ft_isalpha(*line))
 			break ;
 		if (*line != ',' && *line != '\n' && skip_spaces(line) == line && *line)
 			return (0);

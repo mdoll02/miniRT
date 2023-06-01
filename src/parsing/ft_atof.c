@@ -12,6 +12,7 @@
 
 #include "parsing.h"
 #include "math.h"
+#include "libft.h"
 
 static void	skip_whitespaces(char *str)
 {
@@ -44,6 +45,6 @@ float	ft_atof(char *str)
 		i++;
 	}
 	if (*str == '.')
-		result += ft_atof(str + 1) / (float)pow(10, i);
+		result += (float)ft_atof(str + 1) / (float)pow(10, ft_strlen(str + 1));
 	return (result * sign);
 }
