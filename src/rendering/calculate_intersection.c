@@ -79,6 +79,6 @@ t_color	sample_color_at_intersection(t_minirt *mrt, t_intersection c_isect
 	ambient = fmax(0, fmin(ambient, 1.0f));
 	color = color_add(color, color_scale(object_color, diffuse));
 	color = color_add(color, color_scale(object_color, ambient));
-	//color = color_add(color, color_scale(mrt->world.ambient.color, mrt->world.ambient.brightness));
+	color = color_add(color, color_scale(mrt->world.ambient.color, mrt->world.ambient.brightness));
 	return (color);
 }
