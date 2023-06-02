@@ -6,7 +6,7 @@
 /*   By: mdoll <mdoll@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 14:00:13 by mdoll             #+#    #+#             */
-/*   Updated: 2023/05/29 10:46:57 by kschmidt         ###   ########.fr       */
+/*   Updated: 2023/06/02 12:53:43 by mdoll            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,21 @@
 #include "rendering.h"
 #include "vec_math.h"
 #include "color_math.h"
+
+t_color	get_ambient_diffuse_color(t_minirt *mrt, double diffuse,
+				t_color object_color, t_color color)
+{
+	double	ambient;
+
+	diffuse *= mrt->world.light.brightness;
+	ambient = mrt->world.ambient.brightness;
+	ambient = fmax(0, fmin(ambient, 1.0f));
+	color = color_add(color, color_scale(object_color, diffuse));
+	color = color_add(color, color_scale(object_color, ambient));
+	color = color_add(color, color_scale(mrt->world.ambient.color,
+				mrt->world.ambient.brightness));
+	return (color);
+}
 
 int	is_illuminated(t_minirt *mrt, t_intersection isect, t_light light)
 {

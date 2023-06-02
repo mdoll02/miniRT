@@ -50,6 +50,8 @@ t_color			get_reflection(t_vec3 ray_dir, t_minirt *mrt,
 t_color			get_transparency(t_vec3 ray_dir, t_minirt *mrt,
 					t_intersection closest_isect, int depth);
 t_vec3			calculate_ray_direction(t_minirt *mrt, int x, int y);
+t_color			get_ambient_diffuse_color(t_minirt *mrt, double diffuse,
+					t_color object_color, t_color color);
 
 typedef const struct s_func_pair{
 	char	*name;
