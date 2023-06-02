@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include "libft.h"
 #include "parsing.h"
+#include <stdio.h>
 
 static int	lex_line(char *line, t_lexed_line *lexed_line, t_elements *elements)
 {
@@ -97,7 +98,10 @@ int	parse_rt_file(char	*file, t_world *world)
 		return (1);
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
+	{
+		printf("Error\nCould not open file %s\n", file);
 		return (1);
+	}
 	file_size = get_file_size(file);
 	if (file_size <= 0)
 		return (1);
